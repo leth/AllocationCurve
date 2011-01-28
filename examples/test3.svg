@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns='http://www.w3.org/2000/svg' width='400' height='470' version='1.1'>
+<path d='M37.500000 37.500000L112.500000 37.500000L112.500000 112.500000L37.500000 112.500000L37.500000 187.500000L37.500000 262.500000L112.500000 262.500000L112.500000 187.500000L187.500000 187.500000L187.500000 262.500000L262.500000 262.500000L262.500000 187.500000L262.500000 112.500000L187.500000 112.500000L187.500000 37.500000L262.500000 37.500000' fill='none' stroke='black' stroke-width='1' />
+<!-- A -->
+<rect x='225.000000' y='0.000000' width='75.000000' height='75.000000' fill='rgb(255,0,0)' fill-opacity='0.75'/>
+<!-- A -->
+<rect x='150.000000' y='0.000000' width='150.000000' height='75.000000' fill='rgb(255,128,0)' fill-opacity='0.75'/>
+<!-- B -->
+<rect x='150.000000' y='0.000000' width='150.000000' height='75.000000' fill='rgb(255,128,0)' fill-opacity='0.75'/>
+<!-- i -->
+<rect x='150.000000' y='75.000000' width='150.000000' height='75.000000' fill='rgb(255,255,0)' fill-opacity='0.75'/>
+<!-- j -->
+<rect x='150.000000' y='75.000000' width='150.000000' height='75.000000' fill='rgb(128,255,0)' fill-opacity='0.75'/>
+<!-- k -->
+<rect x='225.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(0,255,0)' fill-opacity='0.75'/>
+<!-- l -->
+<rect x='225.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(0,255,128)' fill-opacity='0.75'/>
+<!-- m -->
+<rect x='150.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(0,255,255)' fill-opacity='0.75'/>
+<!-- n -->
+<rect x='150.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(0,128,255)' fill-opacity='0.75'/>
+<!-- o -->
+<rect x='75.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(0,0,255)' fill-opacity='0.75'/>
+<!-- p -->
+<rect x='75.000000' y='150.000000' width='75.000000' height='150.000000' fill='rgb(128,0,255)' fill-opacity='0.75'/>
+<rect x='5' y='305' width='10' height='10' fill='rgb(255,0,0)' />
+<text x='20' y='315' font-family='Verdana' font-size='12'>A</text>
+<rect x='5' y='320' width='10' height='10' fill='rgb(255,128,0)' />
+<text x='20' y='330' font-family='Verdana' font-size='12'>B</text>
+<rect x='5' y='335' width='10' height='10' fill='rgb(255,255,0)' />
+<text x='20' y='345' font-family='Verdana' font-size='12'>i</text>
+<rect x='5' y='350' width='10' height='10' fill='rgb(128,255,0)' />
+<text x='20' y='360' font-family='Verdana' font-size='12'>j</text>
+<rect x='5' y='365' width='10' height='10' fill='rgb(0,255,0)' />
+<text x='20' y='375' font-family='Verdana' font-size='12'>k</text>
+<rect x='5' y='380' width='10' height='10' fill='rgb(0,255,128)' />
+<text x='20' y='390' font-family='Verdana' font-size='12'>l</text>
+<rect x='5' y='395' width='10' height='10' fill='rgb(0,255,255)' />
+<text x='20' y='405' font-family='Verdana' font-size='12'>m</text>
+<rect x='5' y='410' width='10' height='10' fill='rgb(0,128,255)' />
+<text x='20' y='420' font-family='Verdana' font-size='12'>n</text>
+<rect x='5' y='425' width='10' height='10' fill='rgb(0,0,255)' />
+<text x='20' y='435' font-family='Verdana' font-size='12'>o</text>
+<rect x='5' y='440' width='10' height='10' fill='rgb(128,0,255)' />
+<text x='20' y='450' font-family='Verdana' font-size='12'>p</text>
+</svg>
