@@ -22,7 +22,7 @@ You can find examples in the examples directory.
 
 # License
 
-Currently undecided. Contact the author.
+This software is published under the LGPLv3 licence.
 
 # Development
 
