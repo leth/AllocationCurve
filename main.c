@@ -454,6 +454,9 @@ int main (int argc, char *const *argv)
 
 	while ((line = read_line()) != NULL)
 	{
+		if (strlen(line) == 0)
+			continue;
+
 		struct block_alloc * alloc = malloc(sizeof(struct block_alloc));
 		alloc->orig_network = malloc(sizeof(struct in6_addr));
 		char* address = strtok(line, " \t");
@@ -473,7 +476,11 @@ int main (int argc, char *const *argv)
 		}
 
 		char* label = strtok(NULL, "");
-		trimwhitespace(label);
+		if (label == NULL)
+			label = "";
+		else
+			trimwhitespace(label);
+
 		alloc->label = malloc(strlen(label) * sizeof(char));
 		strcpy(alloc->label, label);
 
