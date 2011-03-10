@@ -74,8 +74,8 @@ public class AllocationCurve
 //		}
 //		else
 //		{
-			File input = new File("target/test-classes/examples/UoS.yaml");
-			File output = new File("target/test-classes/examples/test1.svg");
+			File input = new File("target/test-classes/examples/test4.yaml");
+			File output = new File("target/test-classes/examples/test4.svg");
 			try
 			{
 				generateOutput(input, output);

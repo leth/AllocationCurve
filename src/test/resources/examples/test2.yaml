@@ -1,0 +1,19 @@
+label: Root block
+blocks:
+    - "::/60"
+allocations:
+    - label: A
+      blocks:
+          - "::0:0:0:0:0/63"
+    - label: B
+      blocks:
+          - "::2:0:0:0:0/63"
+    - label: i
+      blocks:
+          - "::4:0:0:0:0/62"
+    - label: j
+      blocks:
+          - "::8:0:0:0:0/63"
+    - label: ja
+      blocks:
+          - "::39:0:0:0:0/63"

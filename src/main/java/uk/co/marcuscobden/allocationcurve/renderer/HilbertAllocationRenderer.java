@@ -79,85 +79,80 @@ public abstract class HilbertAllocationRenderer
 	public Rectangle2D.Double getBlockBounds(
 			final InetNetworkAllocationBlock<InetAddress> block, int startBit, int finishBit)
 	{
-//		void in6_addr_to_xy(struct in6_addr* ip_addr, char size,
-//				char start_bit, char finish_bit,
-//				int width, int height,
-//				double *xp, double *yp, double *wp, double *hp)
-//		{
-			// State shapes
-			// 0 = u, 1 = c, 2 = n, 3 = ]
-			// Initial state of lines = 3
-			int state = 0;
+		// State shapes
+		// 0 = u, 1 = c, 2 = n, 3 = ]
+		// Initial state of lines = 3
+		int state = 0;
 
-			double x, y, oX, oY, w, h;
-			x = y = 0;
-			// inital offset is half the size
-			oX = this.size.width  /2d;
-			oY = this.size.height /2d;
-			w = this.size.width;
-			h = this.size.height;
+		double x, y, oX, oY, w, h;
+		x = y = 0;
+		// inital offset is half the size
+		oX = this.size.width  /2d;
+		oY = this.size.height /2d;
+		w = this.size.width;
+		h = this.size.height;
 
-			// Which positions cause x/y offset, by state
-			byte match[][][] = {
-				{{2, 3}, {1, 2}},
-				{{0, 3}, {0, 1}},
-				{{0, 1}, {0, 3}},
-				{{1, 2}, {2, 3}}
-			};
+		// Which positions cause x/y offset, by state
+		byte match[][][] = {
+			{{2, 3}, {1, 2}},
+			{{0, 3}, {0, 1}},
+			{{0, 1}, {0, 3}},
+			{{1, 2}, {2, 3}}
+		};
 
-			// What is the next state, indexed by state, then quad position
-			byte next[][] = {
-				{3, 0, 0, 1},
-				{2, 1, 1, 0},
-				{1, 2, 2, 3},
-				{0, 3, 3, 2}
-			};
+		// What is the next state, indexed by state, then quad position
+		byte next[][] = {
+			{3, 0, 0, 1},
+			{2, 1, 1, 0},
+			{1, 2, 2, 3},
+			{0, 3, 3, 2}
+		};
 
-			// 0 = down, 1 = left, 2 = up, 3 = right
-			// if we change the initial state, these will need to change
-			byte direction[][] ={
-					{0, -1, 2, -1},
-					{1, -1, 3, -1},
-					{2, -1, 0, -1},
-					{3, -1, 1, -1}
-			};
+		// 0 = down, 1 = left, 2 = up, 3 = right
+		// if we change the initial state, these will need to change
+		byte direction[][] ={
+				{0, -1, 2, -1},
+				{1, -1, 3, -1},
+				{2, -1, 0, -1},
+				{3, -1, 1, -1}
+		};
 
-			// we compare 2 bits each iteration.
-			for(int bit = startBit; bit +1 <= finishBit && bit < block.getSize(); bit += 2)
+		// we compare 2 bits each iteration.
+		for(int bit = startBit; bit +1 <= finishBit && bit < block.getSize(); bit += 2)
+		{
+			int pos = getPos(block, bit);
+
+			if (pos == match[state][0][0] || pos == match[state][0][1])
+				x += oX;
+			if (pos == match[state][1][0] || pos == match[state][1][1])
+				y += oY;
+
+			int next_state = next[state][pos];
+
+			// shrink the size of the offsets for the next set of comparisons
+			oX /= 2;
+			oY /= 2;
+			w  /= 2;
+			h  /= 2;
+
+			if (bit +1 >= block.getSize())
 			{
-				int pos = getPos(block, bit);
+				byte d = direction[state][pos];
+				assert(d != -1);
 
-				if (pos == match[state][0][0] || pos == match[state][0][1])
-					x += oX;
-				if (pos == match[state][1][0] || pos == match[state][1][1])
-					y += oY;
+				if ((direction[state][pos] % 2) != 0)
+					w *= 2;
+				else
+					h *= 2;
 
-				int next_state = next[state][pos];
-
-				// shrink the size of the offsets for the next set of comparisons
-				oX /= 2;
-				oY /= 2;
-				w  /= 2;
-				h  /= 2;
-
-				if (bit +1 >= block.getSize())
-				{
-					byte d = direction[state][pos];
-					assert(d != -1);
-
-					if ((direction[state][pos] % 2) != 0)
-						w *= 2;
-					else
-						h *= 2;
-
-					if (d == 1)
-						x -= w/2;
-					else if (d == 2)
-						y -= h/2;
-				}
-
-				state = next_state;
+				if (d == 1)
+					x -= w/2;
+				else if (d == 2)
+					y -= h/2;
 			}
+
+			state = next_state;
+		}
 		
 		return new Rectangle2D.Double(x, y, w, h);
 	}

@@ -1,0 +1,196 @@
+label: Root block
+blocks:
+    - "::/121"
+allocations:
+    - label: A
+      blocks:
+          - "::0/128"
+    - label: B
+      blocks:
+          - "::1/128"
+    - label: C
+      blocks:
+          - "::2/128"
+    - label: D
+      blocks:
+          - "::3/128"
+    - label: e
+      blocks:
+          - "::4/128"
+    - label: f
+      blocks:
+          - "::5/128"
+    - label: g
+      blocks:
+          - "::6/128"
+    - label: h
+      blocks:
+          - "::7/128"
+    - label: i
+      blocks:
+          - "::8/128"
+    - label: j
+      blocks:
+          - "::9/128"
+    - label: k
+      blocks:
+          - "::a/128"
+    - label: l
+      blocks:
+          - "::b/128"
+    - label: m
+      blocks:
+          - "::c/128"
+    - label: n
+      blocks:
+          - "::d/128"
+    - label: o
+      blocks:
+          - "::e/128"
+    - label: p
+      blocks:
+          - "::f/128"
+    - label: AA
+      blocks:
+          - "::10/128"
+    - label: BB
+      blocks:
+          - "::11/128"
+    - label: CC
+      blocks:
+          - "::12/128"
+    - label: DD
+      blocks:
+          - "::13/128"
+    - label: ee
+      blocks:
+          - "::14/128"
+    - label: ff
+      blocks:
+          - "::15/128"
+    - label: gg
+      blocks:
+          - "::16/128"
+    - label: hh
+      blocks:
+          - "::17/128"
+    - label: ii
+      blocks:
+          - "::18/128"
+    - label: jj
+      blocks:
+          - "::19/128"
+    - label: kk
+      blocks:
+          - "::1a/128"
+    - label: ll
+      blocks:
+          - "::1b/128"
+    - label: mm
+      blocks:
+          - "::1c/128"
+    - label: nn
+      blocks:
+          - "::1d/128"
+    - label: oo
+      blocks:
+          - "::1e/128"
+    - label: pp
+      blocks:
+          - "::1f/128"
+    - label: A
+      blocks:
+          - "::20/128"
+    - label: B
+      blocks:
+          - "::21/128"
+    - label: C
+      blocks:
+          - "::22/128"
+    - label: D
+      blocks:
+          - "::23/128"
+    - label: e
+      blocks:
+          - "::24/128"
+    - label: f
+      blocks:
+          - "::25/128"
+    - label: g
+      blocks:
+          - "::26/128"
+    - label: h
+      blocks:
+          - "::27/128"
+    - label: i
+      blocks:
+          - "::28/128"
+    - label: j
+      blocks:
+          - "::29/128"
+    - label: k
+      blocks:
+          - "::2a/128"
+    - label: l
+      blocks:
+          - "::2b/128"
+    - label: m
+      blocks:
+          - "::2c/128"
+    - label: n
+      blocks:
+          - "::2d/128"
+    - label: o
+      blocks:
+          - "::2e/128"
+    - label: p
+      blocks:
+          - "::2f/128"
+    - label: A
+      blocks:
+          - "::30/128"
+    - label: B
+      blocks:
+          - "::31/128"
+    - label: C
+      blocks:
+          - "::32/128"
+    - label: D
+      blocks:
+          - "::33/128"
+    - label: e
+      blocks:
+          - "::34/128"
+    - label: f
+      blocks:
+          - "::35/128"
+    - label: g
+      blocks:
+          - "::36/128"
+    - label: h
+      blocks:
+          - "::37/128"
+    - label: i
+      blocks:
+          - "::38/128"
+    - label: j
+      blocks:
+          - "::39/128"
+    - label: k
+      blocks:
+          - "::3a/128"
+    - label: l
+      blocks:
+          - "::3b/128"
+    - label: m
+      blocks:
+          - "::3c/128"
+    - label: n
+      blocks:
+          - "::3d/128"
+    - label: o
+      blocks:
+          - "::3e/128"
+    - label: p
+      blocks:
+          - "::3f/128"

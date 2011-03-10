@@ -55,25 +55,28 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 	}
 	
 	protected static InetAddress blankSuffix(final InetAddress address,
-			final byte size)
+			final int size)
 	{
 		
 		byte[] bytes = address.getAddress();
 		boolean changed = false;
 
-		// TODO test this works correctly
 		for (int i = 0; i < bytes.length * 8; i += 8)
 		{
 			int block = (int) Math.floor(i / 8);
 			byte mask;
 			
-			if (i +(8-1) <= size)
+			if (i +(8-1) < size)
 			{
 				mask = ~0;
 			}
+			else if (i > size)
+			{
+				mask = 0;
+			}
 			else
 			{
-				mask = (byte) ((~0) << (7 - (i % 8)));
+				mask = (byte) ((~0) << (8 - ((size -i) % 8)));
 			}
 
 			byte prev = bytes[block];
@@ -134,7 +137,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 			{
 				throw new IllegalArgumentException(e);
 			}
-			byte size = Byte.parseByte(matcher.group(2));
+			int size = Integer.parseInt(matcher.group(2));
 
 			if (type == Inet4NetworkAllocationBlock.class)
 			{
@@ -155,11 +158,11 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 
 	protected InetAddressType address;
 
-	protected byte size;
+	protected int size;
 
 	@SuppressWarnings("unchecked")
 	protected InetNetworkAllocationBlock(final InetAddressType address,
-			final byte size)
+			final int size)
 	{
 		this.address = (InetAddressType) blankSuffix(address, size);
 		this.size = size;
@@ -209,7 +212,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		return address;
 	}
 
-	public byte getSize()
+	public int getSize()
 	{
 		return size;
 	}

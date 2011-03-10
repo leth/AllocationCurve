@@ -1,0 +1,37 @@
+label: Root block
+blocks:
+    - "ffff:ffff:ffff:ffff::/60"
+allocations:
+    - label: A
+      blocks:
+          - "ffff:ffff:ffff:ffff::/64"
+    - label: A
+      blocks:
+          - "ffff:ffff:ffff:ffff::/63"
+    - label: B
+      blocks:
+          - "ffff:ffff:ffff:fffe::/63"
+    - label: i
+      blocks:
+          - "ffff:ffff:ffff:fffd::/63"
+    - label: j
+      blocks:
+          - "ffff:ffff:ffff:fffc::/63"
+    - label: k
+      blocks:
+          - "ffff:ffff:ffff:fffb::/63"
+    - label: l
+      blocks:
+          - "ffff:ffff:ffff:fffa::/63"
+    - label: m
+      blocks:
+          - "ffff:ffff:ffff:fff9::/63"
+    - label: n
+      blocks:
+          - "ffff:ffff:ffff:fff8::/63"
+    - label: o
+      blocks:
+          - "ffff:ffff:ffff:fff7::/63"
+    - label: p
+      blocks:
+          - "ffff:ffff:ffff:fff6::/63"

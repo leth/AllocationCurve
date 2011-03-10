@@ -121,7 +121,14 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 			if (children == null || children.size() == 0 || currentDepth == depthLimit)
 				leaves.add(current);
 		}
-
+		
+		// FIXME this will only work for ipv6.
+		if (finishBit == 128)
+		{
+			startBit--;
+			finishBit--;
+		}
+		
 		out.println("<?xml version=\"1.0\"?>");
 		out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
 		out.printf("<svg xmlns='http://www.w3.org/2000/svg' width='%d' height='%d' version='1.1'>\n", size.width, size.height);

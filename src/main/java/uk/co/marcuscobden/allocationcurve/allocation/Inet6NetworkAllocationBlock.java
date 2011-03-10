@@ -25,12 +25,12 @@ public class Inet6NetworkAllocationBlock extends
 {
 
 	public Inet6NetworkAllocationBlock(final Inet6Address address,
-			final byte size)
+			final int size)
 	{
 		super(address, size);
 
-		if (size >= 128)
-			throw new IllegalArgumentException("TODO");
+		if (size > 128)
+			throw new IllegalArgumentException("TODO"); // TODO proper exception message.
 	}
 
 	public int compareTo(final Inet6NetworkAllocationBlock o)

@@ -25,7 +25,7 @@ public class Inet4NetworkAllocationBlock extends
 {
 
 	public Inet4NetworkAllocationBlock(final Inet4Address address,
-			final byte size)
+			final int size)
 	{
 		super(address, size);
 

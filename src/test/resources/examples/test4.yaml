@@ -1,0 +1,22 @@
+label: Root block
+blocks:
+    - "::/0"
+allocations:
+    - label: A
+      blocks:
+          - "0000::/1"
+    - label: B
+      blocks:
+          - "8000::/2"
+    - label: C
+      blocks:
+          - "c000::/3"
+    - label: D
+      blocks:
+          - "e000::/3"
+    - label: E
+      blocks:
+          - "efff::/3"
+    - label: F
+      blocks:
+          - "ffff::/3"
