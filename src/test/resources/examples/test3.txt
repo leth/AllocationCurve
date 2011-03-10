@@ -1,0 +1,12 @@
+ffff:ffff:ffff:ffff/60
+ffff:ffff:ffff:ffff/64 A
+ffff:ffff:ffff:ffff/63 A
+ffff:ffff:ffff:fffe/63 B
+ffff:ffff:ffff:fffd/63 i
+ffff:ffff:ffff:fffc/63 j
+ffff:ffff:ffff:fffb/63 k
+ffff:ffff:ffff:fffa/63 l
+ffff:ffff:ffff:fff9/63 m
+ffff:ffff:ffff:fff8/63 n
+ffff:ffff:ffff:fff7/63 o
+ffff:ffff:ffff:fff6/63 p
