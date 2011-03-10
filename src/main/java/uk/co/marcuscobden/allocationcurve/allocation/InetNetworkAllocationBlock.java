@@ -106,7 +106,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 //		printAddress(address);
 //		printAddress(out);
 //		System.out.flush();
-		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException("Block "+ address.toString().substring(1)+ "/" +prefixLength+ " has bits set in suffix, would become "+ out.toString().substring(1) + "/" + prefixLength);
+		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException("Block "+ address.toString().substring(1)+ "/" +prefixLength+ " has bits set in suffix (would become "+ out.toString().substring(1) + "/" + prefixLength +").");
 	}
 
 	public static InetNetworkAllocationBlock<? extends InetAddress> create(
