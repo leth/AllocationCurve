@@ -23,6 +23,15 @@ import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 
 public abstract class AllocationDeclarationException extends Exception
 {
+	public static class InetNetworkBlockDeclarationException extends RuntimeException {
+
+		public InetNetworkBlockDeclarationException(String message)
+		{
+			super(message);
+		}
+		
+	}
+
 	public static class NonEncompassedBlockException extends AllocationDeclarationException
 	{
 		private InetNetworkAllocationBlock<InetAddress> block;

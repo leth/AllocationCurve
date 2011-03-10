@@ -17,12 +17,10 @@
 package uk.co.marcuscobden.allocationcurve;
 
 import java.net.InetAddress;
-import java.util.Collection;
 import java.util.Set;
 
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
-import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException.NoBlocksDeclaredException;
 
 public class AllocationRecord
 {

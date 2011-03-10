@@ -21,15 +21,20 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.yaml.snakeyaml.constructor.ConstructorException;
+import org.yaml.snakeyaml.error.YAMLException;
 
 public class AllocationCurveGUI extends JFrame
 		implements
@@ -81,7 +86,7 @@ public class AllocationCurveGUI extends JFrame
 
 		JPanel spinnerPanel = new JPanel();
 		JSpinner recursion = new JSpinner();
-		recursion.setValue(0);
+		recursion.setValue(1);
 		recursion.setEditor(new JSpinner.NumberEditor(recursion));
 		spinnerPanel.add(new JLabel("Depth limit:"));
 		spinnerPanel.add(recursion);
@@ -97,7 +102,7 @@ public class AllocationCurveGUI extends JFrame
 		fileLabelPanel.add(outputFileLabel);
 
 		JPanel okCancelPanel = new JPanel();
-		okButton = new JButton("Ok");
+		okButton = new JButton("Render");
 		okButton.addActionListener(this);
 		cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(this);
@@ -157,9 +162,29 @@ public class AllocationCurveGUI extends JFrame
 		else if (source == okButton)
 		{
 			if (inputFile == null || outputFile == null)
+			{
+				JOptionPane.showMessageDialog(this, "Input/Output files not specified.", "AllocationCurve", JOptionPane.WARNING_MESSAGE);
 				return;
-
-			// TODO trigger rendering
+			}
+			
+			try
+			{
+				AllocationCurve.generateOutput(inputFile, outputFile);
+				JOptionPane.showMessageDialog(this, "Rendering complete.", "AllocationCurve", JOptionPane.PLAIN_MESSAGE);
+			}
+			catch (FileNotFoundException e1)
+			{
+				JOptionPane.showMessageDialog(this, "File not found\n" + e1.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+			}
+			catch (ConstructorException e1)
+			{
+				Throwable foo = e1;
+				while (foo instanceof YAMLException)
+				{
+					foo = foo.getCause();
+				}
+				JOptionPane.showMessageDialog(this, "Error in allocation declaration:\n" +foo.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		else if (source == cancelButton)
 		{
