@@ -32,7 +32,6 @@ import java.util.Set;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
-import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
 
 public class SVGAllocationRenderer extends HilbertAllocationRenderer
 {
@@ -76,7 +75,8 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		}
 		else if (blocks.size() == 1)
 		{
-			InetNetworkAllocationBlock rootBlock = blocks.toArray(new InetNetworkAllocationBlock[1])[0];
+			@SuppressWarnings("unchecked")
+			InetNetworkAllocationBlock<InetAddress> rootBlock = blocks.toArray(new InetNetworkAllocationBlock[1])[0];
 			startBit = rootBlock.getSize();
 		}
 		else
@@ -131,7 +131,7 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		
 		out.println("<?xml version=\"1.0\"?>");
 		out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
-		out.printf("<svg xmlns='http://www.w3.org/2000/svg' width='%d' height='%d' version='1.1'>\n", size.width, size.height);
+		out.printf("<svg xmlns='http://www.w3.org/2000/svg' foowidth='%d' fooheight='%d' version='1.1'>\n", size.width, size.height);
 
 		prepareAllocationColors(leaves);
 		
@@ -145,15 +145,27 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		out.println("' />");
 		
 		// Draw the blocks
+		final int spacing = 5;
+		int xOffset = spacing;
+		int yOffset = size.height + spacing;
+		int blockSize = 10;
+		
 		for (AllocationRecord r : leaves)
 		{
 			out.println("<!-- " + r.getLabel() + " -->");
 
 			Color color = getAllocationColor(r);
 
+			out.printf("<rect x='%d' y='%d' width='%d' height='%d' fill='rgb(%d,%d,%d)' />\n",
+					xOffset, yOffset,
+					blockSize, blockSize,
+					color.getRed(), color.getGreen(), color.getBlue());
+			out.printf("<text x='%d' y='%d' font-family='Verdana' font-size='12'>%s</text>\n",
+					xOffset + blockSize + spacing, yOffset +10,
+					r.getLabel());
+			
 			for (InetNetworkAllocationBlock<InetAddress> block : r.getBlocks())
 			{
-				// TODO calculate actual depths
 				Rectangle2D.Double bounds = getBlockBounds(block, startBit, finishBit);
 				out.printf(
 						"<rect x='%f' y='%f' width='%f' height='%f' fill='rgb(%d, %d, %d)' fill-opacity='0.75'/>\n",
@@ -161,6 +173,7 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 						color.getRed(), color.getGreen(), color.getBlue());
 			}
 
+			yOffset += blockSize + spacing;
 		}
 		out.println("</svg>");
 		

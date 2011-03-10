@@ -30,7 +30,7 @@ public class Inet6NetworkAllocationBlock extends
 		super(address, size);
 
 		if (size > 128)
-			throw new IllegalArgumentException("TODO"); // TODO proper exception message.
+			throw new IllegalArgumentException("IPv6 Block size cannot exceed a /128. (" + address + "/" + size + ")");
 	}
 
 	public int compareTo(final Inet6NetworkAllocationBlock o)

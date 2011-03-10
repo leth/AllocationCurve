@@ -29,8 +29,8 @@ public class Inet4NetworkAllocationBlock extends
 	{
 		super(address, size);
 
-		if (size >= 32)
-			throw new IllegalArgumentException("TODO"); // TODO exception message
+		if (size > 32)
+			throw new IllegalArgumentException("IPv4 Block size cannot exceed a /32. (" + address + "/" + size + ")");
 	}
 
 	public int compareTo(final Inet4NetworkAllocationBlock o)

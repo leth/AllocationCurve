@@ -23,6 +23,7 @@ import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
 import uk.co.marcuscobden.allocationcurve.inetaddress.InetAddressComparator;
 
 public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAddress>
@@ -54,8 +55,8 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		System.out.println();
 	}
 	
-	protected static InetAddress blankSuffix(final InetAddress address,
-			final int size)
+	public static void ensureSuffixIsClear(final InetAddress address,
+			final int prefixLength)
 	{
 		
 		byte[] bytes = address.getAddress();
@@ -66,17 +67,17 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 			int block = (int) Math.floor(i / 8);
 			byte mask;
 			
-			if (i +(8-1) < size)
+			if (i +(8-1) < prefixLength)
 			{
 				mask = ~0;
 			}
-			else if (i > size)
+			else if (i > prefixLength)
 			{
 				mask = 0;
 			}
 			else
 			{
-				mask = (byte) ((~0) << (8 - ((size -i) % 8)));
+				mask = (byte) ((~0) << (8 - ((prefixLength -i) % 8)));
 			}
 
 			byte prev = bytes[block];
@@ -84,9 +85,9 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 
 			changed = changed || (prev != bytes[block]);
 		}
-
-		if (!changed)
-			return address;
+		
+		if (! changed)
+			return;
 
 		InetAddress out;
 		try
@@ -105,9 +106,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 //		printAddress(address);
 //		printAddress(out);
 //		System.out.flush();
-		System.err.printf("Warning: block %s/%d had bits set in suffix, becomes %s/%d\n", address.toString().substring(1), size, out.toString().substring(1), size);
-		
-		return out;
+		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException("Block "+ address.toString().substring(1)+ "/" +prefixLength+ " has bits set in suffix, would become "+ out.toString().substring(1) + "/" + prefixLength);
 	}
 
 	public static InetNetworkAllocationBlock<? extends InetAddress> create(
@@ -160,11 +159,15 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 
 	protected int size;
 
-	@SuppressWarnings("unchecked")
 	protected InetNetworkAllocationBlock(final InetAddressType address,
 			final int size)
 	{
-		this.address = (InetAddressType) blankSuffix(address, size);
+		if (size < 0)
+			throw new IllegalArgumentException("Block size cannot be negative. (" + address + "/" + size + ")");
+		
+		ensureSuffixIsClear(address, size);
+		
+		this.address = address;
 		this.size = size;
 	}
 

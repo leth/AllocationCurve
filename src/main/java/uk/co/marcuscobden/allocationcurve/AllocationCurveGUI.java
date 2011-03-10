@@ -86,7 +86,7 @@ public class AllocationCurveGUI extends JFrame
 		spinnerPanel.add(new JLabel("Depth limit:"));
 		spinnerPanel.add(recursion);
 
-		JLabel label = new JLabel("Set to zero for infinite depth");
+		JLabel label = new JLabel("Set to -1 for infinite depth");
 		label.setFont(label.getFont().deriveFont(Font.ITALIC));
 
 		recursionPanel.add(spinnerPanel);
