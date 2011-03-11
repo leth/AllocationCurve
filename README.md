@@ -6,7 +6,7 @@ The utility outputs this in Scalable Vector Graphics (SVG) format.
 
 # Current Status
 
-This utility is currently being re-written in Java from the original C implementation.
+This utility is currently undergoing testing before release.
 
 # Input and Output
 
