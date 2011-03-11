@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve.allocation;
 
 import java.net.Inet4Address;
@@ -41,24 +41,24 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 	private static final Pattern ipv4_block_pattern = Pattern
 			.compile(ipv4_block_regex);
 
-	public static void printAddress(InetAddress add)
+	public static void printAddress(final InetAddress add)
 	{
 		byte[] bytes = add.getAddress();
-		
-		for (int i = 0; i < bytes.length; i++)
+
+		for (byte b : bytes)
 		{
 			for (int j = 0; j < 8; j++)
 			{
-				System.out.print((bytes[i] & (1 << (7 - j))) != 0 ? 1 : 0 );
+				System.out.print((b & (1 << (7 - j))) != 0 ? 1 : 0);
 			}
 		}
 		System.out.println();
 	}
-	
+
 	public static void ensureSuffixIsClear(final InetAddress address,
 			final int prefixLength)
 	{
-		
+
 		byte[] bytes = address.getAddress();
 		boolean changed = false;
 
@@ -66,8 +66,8 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		{
 			int block = (int) Math.floor(i / 8);
 			byte mask;
-			
-			if (i +(8-1) < prefixLength)
+
+			if (i + (8 - 1) < prefixLength)
 			{
 				mask = ~0;
 			}
@@ -77,7 +77,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 			}
 			else
 			{
-				mask = (byte) ((~0) << (8 - ((prefixLength -i) % 8)));
+				mask = (byte) ((~0) << (8 - ((prefixLength - i) % 8)));
 			}
 
 			byte prev = bytes[block];
@@ -85,8 +85,8 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 
 			changed = changed || (prev != bytes[block]);
 		}
-		
-		if (! changed)
+
+		if (!changed)
 			return;
 
 		InetAddress out;
@@ -97,16 +97,20 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		{
 			throw new IllegalArgumentException(e);
 		}
-		
-//		for (int i = 0; i < 128; i++)
-//		{
-//			System.out.print(i % 10);
-//		}
-//		System.out.println();
-//		printAddress(address);
-//		printAddress(out);
-//		System.out.flush();
-		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException("Block "+ address.toString().substring(1)+ "/" +prefixLength+ " has bits set in suffix (would become "+ out.toString().substring(1) + "/" + prefixLength +").");
+
+		// for (int i = 0; i < 128; i++)
+		// {
+		// System.out.print(i % 10);
+		// }
+		// System.out.println();
+		// printAddress(address);
+		// printAddress(out);
+		// System.out.flush();
+		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException(
+				"Block " + address.toString().substring(1) + "/" + prefixLength
+						+ " has bits set in suffix (would become "
+						+ out.toString().substring(1) + "/" + prefixLength
+						+ ").");
 	}
 
 	public static InetNetworkAllocationBlock<? extends InetAddress> create(
@@ -163,10 +167,12 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 			final int size)
 	{
 		if (size < 0)
-			throw new IllegalArgumentException("Block size cannot be negative. (" + address + "/" + size + ")");
-		
+			throw new IllegalArgumentException(
+					"Block size cannot be negative. (" + address + "/" + size
+							+ ")");
+
 		ensureSuffixIsClear(address, size);
-		
+
 		this.address = address;
 		this.size = size;
 	}
@@ -230,33 +236,39 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		return result;
 	}
 
-	public boolean encompasses(InetNetworkAllocationBlock<InetAddress> other)
+	public boolean encompasses(
+			final InetNetworkAllocationBlock<InetAddress> other)
 	{
 		if (this.getClass() != other.getClass())
 			return false;
-		
+
 		if (this.size >= other.size)
 			return false;
-		
+
 		return bitsMatch(other, this.size);
 	}
-	
-	public boolean bitsMatch(InetNetworkAllocationBlock<InetAddress> other, int bits)
+
+	public
+			boolean bitsMatch(
+					final InetNetworkAllocationBlock<InetAddress> other,
+					final int bits)
 	{
 		return bitsMatch(other, 0, bits);
 	}
 
-	public boolean bitsMatch(InetNetworkAllocationBlock<InetAddress> other, int start, int finish)
+	public boolean bitsMatch(
+			final InetNetworkAllocationBlock<InetAddress> other,
+			final int start, final int finish)
 	{
 		byte[] myBytes = this.address.getAddress();
 		byte[] otherBytes = other.address.getAddress();
-		
+
 		for (int i = start; i < finish; i += 8)
 		{
 			int block = (int) Math.floor(i / 8);
 			byte mask;
-			
-			if (i +(8-1) < finish)
+
+			if (i + (8 - 1) < finish)
 			{
 				mask = ~0;
 			}
@@ -264,15 +276,14 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 			{
 				mask = (byte) ((~0) << (7 - (i % 8)));
 			}
-			
+
 			byte result = (byte) ((myBytes[block] ^ otherBytes[block]) & mask);
-			
+
 			if (result != 0)
 				return false;
 		}
-		
+
 		return true;
 	}
-	
-	
+
 }

@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve;
 
 import java.awt.Dimension;
@@ -47,32 +47,34 @@ public class AllocationCurveMain
 		else
 		{
 			AllocationCurveOptions opts = new AllocationCurveOptions();
-		    CmdLineParser parser = new CmdLineParser(opts);
-		    try {
-		        parser.parseArgument(args);
-		    } catch(CmdLineException e ) {
-		        System.err.println(e.getMessage());
-		        parser.printUsage(System.err);
-		        return;
-		    }
+			CmdLineParser parser = new CmdLineParser(opts);
+			try
+			{
+				parser.parseArgument(args);
+			} catch (CmdLineException e)
+			{
+				System.err.println(e.getMessage());
+				parser.printUsage(System.err);
+				return;
+			}
 
-		    if (opts.showGUI)
-		    {
-		    	// TODO show GUI with supplied options
-		    }
-		    else
-		    {
-		    	InputStream input = null;
-		    	File workingDir;
-		    	
-		    	if (opts.input == null)
-		    	{
-		    		input = System.in;
-		    		workingDir = new File(System.getProperty("user.dir"));
-		    	}
-		    	else
-		    	{
-		    		try
+			if (opts.showGUI)
+			{
+				// TODO show GUI with supplied options
+			}
+			else
+			{
+				InputStream input = null;
+				File workingDir;
+
+				if (opts.input == null)
+				{
+					input = System.in;
+					workingDir = new File(System.getProperty("user.dir"));
+				}
+				else
+				{
+					try
 					{
 						input = new FileInputStream(opts.input);
 					} catch (FileNotFoundException e)
@@ -80,12 +82,12 @@ public class AllocationCurveMain
 						System.err.println(e.getMessage());
 						System.exit(1);
 					}
-		    		workingDir = opts.input.getParentFile();
-		    	}
-		    	
-		    	OutputStream output = null;
-		    	if (opts.output == null)
-		    		output = System.out;
+					workingDir = opts.input.getParentFile();
+				}
+
+				OutputStream output = null;
+				if (opts.output == null)
+					output = System.out;
 				else
 				{
 					try
@@ -97,11 +99,11 @@ public class AllocationCurveMain
 						System.exit(1);
 					}
 				}
-		    	
-		    	AllocationRecord root = loadConfig(input, workingDir);
-		    	render(output, root, opts.depthLimit);
-		    	
-		    	try
+
+				AllocationRecord root = loadConfig(input, workingDir);
+				render(output, root, opts.depthLimit);
+
+				try
 				{
 					output.close();
 				} catch (IOException e)
@@ -109,7 +111,7 @@ public class AllocationCurveMain
 					System.err.println("Error closing output stream");
 					e.printStackTrace();
 				}
-		    }
+			}
 		}
 	}
 
@@ -120,25 +122,27 @@ public class AllocationCurveMain
 		gui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		gui.setVisible(true);
 	}
-	
-	public static AllocationRecord loadConfig(InputStream input, File workingDir)
+
+	public static AllocationRecord loadConfig(final InputStream input,
+			final File workingDir)
 	{
 		// TODO pass depth limit to config loading
-		Yaml yamlParser = new Yaml(
-				new SubYAMLConstructor<AllocationRecord>(
-						AllocationRecord.class,
-						workingDir));
+		Yaml yamlParser = new Yaml(new SubYAMLConstructor<AllocationRecord>(
+				AllocationRecord.class, workingDir));
 
 		return (AllocationRecord) yamlParser.load(input);
 	}
 
-	public static void validate(AllocationRecord root) throws AllocationDeclarationException
+	public static void validate(final AllocationRecord root)
+			throws AllocationDeclarationException
 	{
 		root.validate();
 	}
-	
-	public static void render(OutputStream output, AllocationRecord root, int depthLimit)
+
+	public static void render(final OutputStream output,
+			final AllocationRecord root, final int depthLimit)
 	{
-		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root, -1);
+		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root,
+				-1);
 	}
 }

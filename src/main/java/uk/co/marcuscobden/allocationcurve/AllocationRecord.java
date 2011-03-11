@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve;
 
 import java.net.InetAddress;
@@ -80,25 +80,28 @@ public class AllocationRecord
 	{
 		this.label = label;
 	}
-	
+
 	public void validate() throws AllocationDeclarationException
 	{
 		validate(null);
 	}
-	
-	protected void validate(Class<? extends InetAddress> ipVersion) throws AllocationDeclarationException
+
+	protected void validate(Class<? extends InetAddress> ipVersion)
+			throws AllocationDeclarationException
 	{
 		boolean blockVersionsChecked = false;
-		
+
 		if (ipVersion == null)
 		{
 			if (blocks.size() == 0)
 			{
-				throw new AllocationDeclarationException.NoBlocksDeclaredException(this);
+				throw new AllocationDeclarationException.NoBlocksDeclaredException(
+						this);
 			}
 			else if (blocks.size() == 1)
 			{
-				ipVersion = blocks.toArray(new InetNetworkAllocationBlock[1])[0].getAddress().getClass();
+				ipVersion = blocks.toArray(new InetNetworkAllocationBlock[1])[0]
+						.getAddress().getClass();
 			}
 			else
 			{
@@ -107,26 +110,29 @@ public class AllocationRecord
 				{
 					if (seen == null)
 						seen = block.getAddress().getClass();
-					else if (! seen.equals(block.getAddress().getClass()))
-						throw new AllocationDeclarationException.IPVersionMismatch(this, seen, block.getAddress());
+					else if (!seen.equals(block.getAddress().getClass()))
+						throw new AllocationDeclarationException.IPVersionMismatch(
+								this, seen, block.getAddress());
 				}
 				ipVersion = seen;
 				blockVersionsChecked = true;
 			}
 		}
-		
+
 		if (!blockVersionsChecked)
 		{
 			for (InetNetworkAllocationBlock<? extends InetAddress> block : blocks)
 			{
-				if (! ipVersion.equals(block.getAddress().getClass()))
-					throw new AllocationDeclarationException.IPVersionMismatch(this, ipVersion, block.getAddress());
+				if (!ipVersion.equals(block.getAddress().getClass()))
+					throw new AllocationDeclarationException.IPVersionMismatch(
+							this, ipVersion, block.getAddress());
 			}
 		}
-		
+
 		if (allocations != null)
 		{
-			// check sub-allocations fit within at least one block of this allocation.
+			// check sub-allocations fit within at least one block of this
+			// allocation.
 			for (AllocationRecord alloc : allocations)
 			{
 				if (alloc.getAllocations() == null)
@@ -143,15 +149,15 @@ public class AllocationRecord
 							break;
 						}
 					}
-					
+
 					if (!contained)
 					{
-						throw new AllocationDeclarationException.NonEncompassedBlockException(this, allocBlock);
+						throw new AllocationDeclarationException.NonEncompassedBlockException(
+								this, allocBlock);
 					}
 				}
 			}
-		
-		
+
 			for (AllocationRecord alloc : allocations)
 			{
 				alloc.validate(ipVersion);

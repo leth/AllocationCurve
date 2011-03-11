@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve.renderer;
 
 import java.awt.Dimension;
@@ -77,7 +77,8 @@ public abstract class HilbertAllocationRenderer
 	}
 
 	public Rectangle2D.Double getBlockBounds(
-			final InetNetworkAllocationBlock<InetAddress> block, int startBit, int finishBit)
+			final InetNetworkAllocationBlock<InetAddress> block,
+			final int startBit, final int finishBit)
 	{
 		// State shapes
 		// 0 = u, 1 = c, 2 = n, 3 = ]
@@ -87,38 +88,26 @@ public abstract class HilbertAllocationRenderer
 		double x, y, oX, oY, w, h;
 		x = y = 0;
 		// inital offset is half the size
-		oX = this.size.width  /2d;
-		oY = this.size.height /2d;
-		w = this.size.width;
-		h = this.size.height;
+		oX = size.width / 2d;
+		oY = size.height / 2d;
+		w = size.width;
+		h = size.height;
 
 		// Which positions cause x/y offset, by state
-		byte match[][][] = {
-			{{2, 3}, {1, 2}},
-			{{0, 3}, {0, 1}},
-			{{0, 1}, {0, 3}},
-			{{1, 2}, {2, 3}}
-		};
+		byte match[][][] = { { { 2, 3 }, { 1, 2 } }, { { 0, 3 }, { 0, 1 } },
+				{ { 0, 1 }, { 0, 3 } }, { { 1, 2 }, { 2, 3 } } };
 
 		// What is the next state, indexed by state, then quad position
-		byte next[][] = {
-			{3, 0, 0, 1},
-			{2, 1, 1, 0},
-			{1, 2, 2, 3},
-			{0, 3, 3, 2}
-		};
+		byte next[][] = { { 3, 0, 0, 1 }, { 2, 1, 1, 0 }, { 1, 2, 2, 3 },
+				{ 0, 3, 3, 2 } };
 
 		// 0 = down, 1 = left, 2 = up, 3 = right
 		// if we change the initial state, these will need to change
-		byte direction[][] ={
-				{0, -1, 2, -1},
-				{1, -1, 3, -1},
-				{2, -1, 0, -1},
-				{3, -1, 1, -1}
-		};
+		byte direction[][] = { { 0, -1, 2, -1 }, { 1, -1, 3, -1 },
+				{ 2, -1, 0, -1 }, { 3, -1, 1, -1 } };
 
 		// we compare 2 bits each iteration.
-		for(int bit = startBit; bit +1 <= finishBit && bit < block.getSize(); bit += 2)
+		for (int bit = startBit; bit + 1 <= finishBit && bit < block.getSize(); bit += 2)
 		{
 			int pos = getPos(block, bit);
 
@@ -132,13 +121,13 @@ public abstract class HilbertAllocationRenderer
 			// shrink the size of the offsets for the next set of comparisons
 			oX /= 2;
 			oY /= 2;
-			w  /= 2;
-			h  /= 2;
+			w /= 2;
+			h /= 2;
 
-			if (bit +1 >= block.getSize())
+			if (bit + 1 >= block.getSize())
 			{
 				byte d = direction[state][pos];
-				assert(d != -1);
+				assert (d != -1);
 
 				if ((direction[state][pos] % 2) != 0)
 					w *= 2;
@@ -146,32 +135,33 @@ public abstract class HilbertAllocationRenderer
 					h *= 2;
 
 				if (d == 1)
-					x -= w/2;
+					x -= w / 2;
 				else if (d == 2)
-					y -= h/2;
+					y -= h / 2;
 			}
 
 			state = next_state;
 		}
-		
+
 		return new Rectangle2D.Double(x, y, w, h);
 	}
 
-	protected int getPos(InetNetworkAllocationBlock<InetAddress> block, int bit)
+	protected int getPos(final InetNetworkAllocationBlock<InetAddress> block,
+			final int bit)
 	{
-		char block1 = (char) Math.floor( bit     / 8d);
-		char block2 = (char) Math.floor((bit +1) / 8d);
-	
+		char block1 = (char) Math.floor(bit / 8d);
+		char block2 = (char) Math.floor((bit + 1) / 8d);
+
 		byte bits1 = block.getAddress().getAddress()[block1];
 		byte bits2 = block.getAddress().getAddress()[block2];
-	
-		int sub_bit1 = (8 -1) - ((bit   ) % 8);
-		int sub_bit2 = (8 -1) - ((bit +1) % 8);
-	
+
+		int sub_bit1 = (8 - 1) - ((bit) % 8);
+		int sub_bit2 = (8 - 1) - ((bit + 1) % 8);
+
 		// build the masks
 		byte mask1 = (byte) (1 << sub_bit1);
 		byte mask2 = (byte) (1 << sub_bit2);
-	
+
 		return ((bits1 & mask1) != 0 ? 2 : 0) + ((bits2 & mask2) != 0 ? 1 : 0);
 	}
 

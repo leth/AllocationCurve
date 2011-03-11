@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve;
 
 import java.awt.Container;
@@ -33,7 +33,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.yaml.snakeyaml.constructor.ConstructorException;
@@ -92,7 +91,8 @@ public class AllocationCurveGUI extends JFrame
 		JPanel spinnerPanel = new JPanel();
 		depthLimitSpinner = new JSpinner();
 		depthLimitSpinner.setValue(1);
-		depthLimitSpinner.setEditor(new JSpinner.NumberEditor(depthLimitSpinner));
+		depthLimitSpinner
+				.setEditor(new JSpinner.NumberEditor(depthLimitSpinner));
 		spinnerPanel.add(new JLabel("Depth limit:"));
 		spinnerPanel.add(depthLimitSpinner);
 
@@ -167,59 +167,71 @@ public class AllocationCurveGUI extends JFrame
 		{
 			if (inputFile == null || outputFile == null)
 			{
-				JOptionPane.showMessageDialog(this, "Input/Output files not specified.", "AllocationCurve", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						"Input/Output files not specified.", "AllocationCurve",
+						JOptionPane.WARNING_MESSAGE);
 				return;
 			}
-			
+
 			FileInputStream input;
 			try
 			{
 				input = new FileInputStream(inputFile);
-			}
-			catch (FileNotFoundException e)
+			} catch (FileNotFoundException e)
 			{
-				JOptionPane.showMessageDialog(this, "File not found\n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						"File not found\n" + e.getMessage(), "AllocationCurve",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			AllocationRecord root;
 			try
 			{
-				root = AllocationCurveMain.loadConfig(input, inputFile.getParentFile());
-			}
-			catch (ConstructorException e)
+				root = AllocationCurveMain.loadConfig(input,
+						inputFile.getParentFile());
+			} catch (ConstructorException e)
 			{
 				Throwable foo = e;
 				while (foo instanceof YAMLException)
 				{
 					foo = foo.getCause();
 				}
-				JOptionPane.showMessageDialog(this, "Error in allocation declaration:\n" +foo.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				JOptionPane
+						.showMessageDialog(
+								this,
+								"Error in allocation declaration:\n"
+										+ foo.getMessage(), "AllocationCurve",
+								JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			FileOutputStream output;
 			try
 			{
 				output = new FileOutputStream(outputFile);
-			}
-			catch (FileNotFoundException e)
+			} catch (FileNotFoundException e)
 			{
-				JOptionPane.showMessageDialog(this, "Cannot write to file. \n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "Cannot write to file. \n"
+						+ e.getMessage(), "AllocationCurve",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			try
 			{
-				AllocationCurveMain.render(output, root, (Integer) this.depthLimitSpinner.getValue());
-			}
-			catch (Exception e)
+				AllocationCurveMain.render(output, root,
+						(Integer) depthLimitSpinner.getValue());
+			} catch (Exception e)
 			{
-				JOptionPane.showMessageDialog(this, "Error rendering allocation. \n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this,
+						"Error rendering allocation. \n" + e.getMessage(),
+						"AllocationCurve", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 				return;
 			}
-			JOptionPane.showMessageDialog(this, "Rendering complete.", "AllocationCurve", JOptionPane.PLAIN_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Rendering complete.",
+					"AllocationCurve", JOptionPane.PLAIN_MESSAGE);
 		}
 		else if (source == cancelButton)
 		{

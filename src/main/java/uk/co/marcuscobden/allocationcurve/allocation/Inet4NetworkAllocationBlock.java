@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve.allocation;
 
 import java.net.Inet4Address;
@@ -30,7 +30,9 @@ public class Inet4NetworkAllocationBlock extends
 		super(address, size);
 
 		if (size > 32)
-			throw new IllegalArgumentException("IPv4 Block size cannot exceed a /32. (" + address + "/" + size + ")");
+			throw new IllegalArgumentException(
+					"IPv4 Block size cannot exceed a /32. (" + address + "/"
+							+ size + ")");
 	}
 
 	public int compareTo(final Inet4NetworkAllocationBlock o)

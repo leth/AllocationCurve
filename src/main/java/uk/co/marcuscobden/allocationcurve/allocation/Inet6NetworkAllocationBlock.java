@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve.allocation;
 
 import java.net.Inet6Address;
@@ -30,7 +30,9 @@ public class Inet6NetworkAllocationBlock extends
 		super(address, size);
 
 		if (size > 128)
-			throw new IllegalArgumentException("IPv6 Block size cannot exceed a /128. (" + address + "/" + size + ")");
+			throw new IllegalArgumentException(
+					"IPv6 Block size cannot exceed a /128. (" + address + "/"
+							+ size + ")");
 	}
 
 	public int compareTo(final Inet6NetworkAllocationBlock o)

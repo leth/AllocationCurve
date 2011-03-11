@@ -13,7 +13,7 @@
 
 	You should have received a copy of the GNU Lesser General Public License
 	along with AllocationCurve. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package uk.co.marcuscobden.allocationcurve.exception;
 
 import java.net.InetAddress;
@@ -23,37 +23,46 @@ import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 
 public abstract class AllocationDeclarationException extends Exception
 {
-	public static class InetNetworkBlockDeclarationException extends RuntimeException {
+	public static class InetNetworkBlockDeclarationException extends
+			RuntimeException
+	{
 
-		public InetNetworkBlockDeclarationException(String message)
+		public InetNetworkBlockDeclarationException(final String message)
 		{
 			super(message);
 		}
-		
+
 	}
 
-	public static class NonEncompassedBlockException extends AllocationDeclarationException
+	public static class NonEncompassedBlockException extends
+			AllocationDeclarationException
 	{
 		private InetNetworkAllocationBlock<InetAddress> block;
 
-		public NonEncompassedBlockException(AllocationRecord allocationRecord, InetNetworkAllocationBlock<InetAddress> block)
+		public NonEncompassedBlockException(
+				final AllocationRecord allocationRecord,
+				final InetNetworkAllocationBlock<InetAddress> block)
 		{
 			super(allocationRecord);
 			this.block = block;
 		}
 	}
 
-	public static class IPVersionMismatch extends AllocationDeclarationException
+	public static class IPVersionMismatch extends
+			AllocationDeclarationException
 	{
-		public IPVersionMismatch(AllocationRecord allocationRecord, Class<? extends InetAddress> expected, InetAddress mismatch)
+		public IPVersionMismatch(final AllocationRecord allocationRecord,
+				final Class<? extends InetAddress> expected,
+				final InetAddress mismatch)
 		{
 			super(allocationRecord);
 		}
 	}
 
-	public static class NoBlocksDeclaredException extends AllocationDeclarationException
+	public static class NoBlocksDeclaredException extends
+			AllocationDeclarationException
 	{
-		public NoBlocksDeclaredException(AllocationRecord allocationRecord)
+		public NoBlocksDeclaredException(final AllocationRecord allocationRecord)
 		{
 			super(allocationRecord);
 		}
@@ -62,9 +71,9 @@ public abstract class AllocationDeclarationException extends Exception
 
 	protected AllocationRecord allocationRecord;
 
-	public AllocationDeclarationException(AllocationRecord allocationRecord)
+	public AllocationDeclarationException(
+			final AllocationRecord allocationRecord)
 	{
 		this.allocationRecord = allocationRecord;
 	}
 }
-
