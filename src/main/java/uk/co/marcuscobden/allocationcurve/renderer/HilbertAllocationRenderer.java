@@ -20,6 +20,8 @@ import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.OutputStream;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -170,13 +172,14 @@ public abstract class HilbertAllocationRenderer
 	public static int[] getBitRange(final AllocationRecord root, Collection<AllocationRecord> leaves)
 	{
 		int startBit, finishBit;
+		Class<? extends InetAddress> ipVersion = null;
 		Set<InetNetworkAllocationBlock<InetAddress>> blocks = root.getBlocks();
 
 		if (blocks == null || blocks.size() == 0)
 		{
 			// Should not happen if the allocs have already been verified.
 			throw new AssertionError(
-					"Alocation should have failed verification.");
+					"Alocation should have failed verification. How did we get here?");
 		}
 		else if (blocks.size() == 1)
 		{
@@ -184,11 +187,12 @@ public abstract class HilbertAllocationRenderer
 			InetNetworkAllocationBlock<InetAddress> rootBlock = blocks
 					.toArray(new InetNetworkAllocationBlock[1])[0];
 			startBit = rootBlock.getSize();
+			ipVersion = rootBlock.getAddress().getClass();
 		}
 		else
 		{
 			// TODO implement code for multiple root blocks.
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Support for multiple root blocks is not implemented");
 		}
 		finishBit = startBit;
 		
@@ -198,8 +202,8 @@ public abstract class HilbertAllocationRenderer
 				finishBit = Math.max(finishBit, b.getSize());
 		}
 		
-		// FIXME this will only work for ipv6.
-		if (finishBit == 128)
+		if ((ipVersion == Inet6Address.class && finishBit == 128) ||
+				(ipVersion == Inet4Address.class && finishBit == 32))
 		{
 			startBit--;
 			finishBit--;

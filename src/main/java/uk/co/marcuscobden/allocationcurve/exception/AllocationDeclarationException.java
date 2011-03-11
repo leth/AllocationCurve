@@ -43,7 +43,7 @@ public abstract class AllocationDeclarationException extends Exception
 				final AllocationRecord allocationRecord,
 				final InetNetworkAllocationBlock<InetAddress> block)
 		{
-			super(allocationRecord);
+			super(allocationRecord, "Block ("+ block +") in "+ allocationRecord.getLabel() +" not encompassed by parent allocation.");
 			this.block = block;
 		}
 	}
@@ -55,7 +55,7 @@ public abstract class AllocationDeclarationException extends Exception
 				final Class<? extends InetAddress> expected,
 				final InetAddress mismatch)
 		{
-			super(allocationRecord);
+			super(allocationRecord, "IP version mismatch - expected " + expected.getName() + " found "+ mismatch);
 		}
 	}
 
@@ -64,7 +64,7 @@ public abstract class AllocationDeclarationException extends Exception
 	{
 		public NoBlocksDeclaredException(final AllocationRecord allocationRecord)
 		{
-			super(allocationRecord);
+			super(allocationRecord, "No blocks declared.");
 		}
 
 	}
@@ -72,8 +72,9 @@ public abstract class AllocationDeclarationException extends Exception
 	protected AllocationRecord allocationRecord;
 
 	public AllocationDeclarationException(
-			final AllocationRecord allocationRecord)
+			final AllocationRecord allocationRecord, String message)
 	{
+		super("Error in allocation '" + allocationRecord.getLabel() + "': " + message);
 		this.allocationRecord = allocationRecord;
 	}
 }
