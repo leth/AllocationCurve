@@ -40,13 +40,15 @@ public class AllocationCurveMain
 
 	public static void main(final String[] args)
 	{
+		AllocationCurveOptions opts = new AllocationCurveOptions();
+		
 		if (args.length == 0)
 		{
-			startGUI();
+			startGUI(opts);
 		}
 		else
 		{
-			AllocationCurveOptions opts = new AllocationCurveOptions();
+			
 			CmdLineParser parser = new CmdLineParser(opts);
 			try
 			{
@@ -60,7 +62,7 @@ public class AllocationCurveMain
 
 			if (opts.showGUI)
 			{
-				// TODO show GUI with supplied options
+				startGUI(opts);
 			}
 			else
 			{
@@ -115,9 +117,9 @@ public class AllocationCurveMain
 		}
 	}
 
-	protected static void startGUI()
+	protected static void startGUI(AllocationCurveOptions opts)
 	{
-		AllocationCurveGUI gui = new AllocationCurveGUI();
+		AllocationCurveGUI gui = new AllocationCurveGUI(opts);
 
 		gui.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		gui.setVisible(true);

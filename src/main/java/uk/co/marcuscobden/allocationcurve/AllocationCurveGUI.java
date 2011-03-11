@@ -61,10 +61,29 @@ public class AllocationCurveGUI extends JFrame
 
 	private JSpinner depthLimitSpinner;
 
-	public AllocationCurveGUI()
+	public AllocationCurveGUI(AllocationCurveOptions opts)
 	{
 		super("AllocationCurve");
-
+		
+		setupGUI();
+		
+		inputFile = opts.input;
+		outputFile = opts.output;
+		
+		if (inputFile != null)
+		{
+			inputFileLabel.setText(inputFile.getName());
+		}
+		if (outputFile != null)
+		{
+			outputFileLabel.setText(outputFile.getName());
+		}
+		
+		depthLimitSpinner.setValue(opts.depthLimit);
+	}
+	
+	protected void setupGUI()
+	{
 		fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
@@ -90,7 +109,7 @@ public class AllocationCurveGUI extends JFrame
 
 		JPanel spinnerPanel = new JPanel();
 		depthLimitSpinner = new JSpinner();
-		depthLimitSpinner.setValue(1);
+		
 		depthLimitSpinner
 				.setEditor(new JSpinner.NumberEditor(depthLimitSpinner));
 		spinnerPanel.add(new JLabel("Depth limit:"));
@@ -130,6 +149,8 @@ public class AllocationCurveGUI extends JFrame
 		{
 			if (inputFile != null)
 				fc.setSelectedFile(inputFile);
+			else
+				fc.setSelectedFile(new File(System.getProperty("user.dir")));
 
 			fc.setFileFilter(new FileNameExtensionFilter(
 					"Allocation files (txt, yaml)", "txt", "text", "yml",
