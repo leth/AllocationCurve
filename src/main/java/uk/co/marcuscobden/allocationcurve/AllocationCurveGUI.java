@@ -38,6 +38,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import org.yaml.snakeyaml.constructor.ConstructorException;
 import org.yaml.snakeyaml.error.YAMLException;
 
+import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
+
 public class AllocationCurveGUI extends JFrame
 		implements
 			ActionListener
@@ -224,6 +226,20 @@ public class AllocationCurveGUI extends JFrame
 								"Error in allocation declaration:\n"
 										+ foo.getMessage(), "AllocationCurve",
 								JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			try
+			{
+				root.validate((Integer) depthLimitSpinner.getValue());
+			} catch (AllocationDeclarationException e)
+			{
+				JOptionPane
+				.showMessageDialog(
+						this,
+						"Allocation declaration failed validation:\n"
+								+ e.getMessage(), "AllocationCurve",
+						JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 

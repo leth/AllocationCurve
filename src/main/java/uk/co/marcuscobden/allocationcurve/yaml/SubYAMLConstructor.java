@@ -74,7 +74,7 @@ public class SubYAMLConstructor<T extends AllocationRecord> extends
 			}
 
 			FileInputStream input = null;
-			if (subFile != null && depthLimit > 0)
+			if (subFile != null && (depthLimit == -1 || depthLimit > 0))
 			{
 				try
 				{

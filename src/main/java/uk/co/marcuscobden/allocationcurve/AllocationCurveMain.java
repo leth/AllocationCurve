@@ -103,6 +103,17 @@ public class AllocationCurveMain
 				}
 
 				AllocationRecord root = loadConfig(input, workingDir, opts.depthLimit);
+				
+				try
+				{
+					root.validate(opts.depthLimit);
+				} catch (AllocationDeclarationException e)
+				{
+					System.err.println("Cannot render, declaration failed validation.");
+					System.err.println(e.getMessage());
+					System.exit(1);
+				}
+				
 				render(output, root, opts.depthLimit);
 
 				try
@@ -132,12 +143,6 @@ public class AllocationCurveMain
 				AllocationRecord.class, workingDir, depthLimit));
 
 		return (AllocationRecord) yamlParser.load(input);
-	}
-
-	public static void validate(final AllocationRecord root)
-			throws AllocationDeclarationException
-	{
-		root.validate();
 	}
 
 	public static void render(final OutputStream output,

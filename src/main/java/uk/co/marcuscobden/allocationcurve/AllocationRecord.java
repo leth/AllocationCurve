@@ -81,19 +81,19 @@ public class AllocationRecord
 		this.label = label;
 	}
 
-	public void validate() throws AllocationDeclarationException
+	public void validate(int depthLimit) throws AllocationDeclarationException
 	{
-		validate(null);
+		validate(null, depthLimit);
 	}
 
-	protected void validate(Class<? extends InetAddress> ipVersion)
+	protected void validate(Class<? extends InetAddress> ipVersion, int depthLimit)
 			throws AllocationDeclarationException
 	{
 		boolean blockVersionsChecked = false;
 
 		if (ipVersion == null)
 		{
-			if (blocks.size() == 0)
+			if (blocks == null || blocks.size() == 0)
 			{
 				throw new AllocationDeclarationException.NoBlocksDeclaredException(
 						this);
@@ -121,6 +121,10 @@ public class AllocationRecord
 
 		if (!blockVersionsChecked)
 		{
+			if (blocks == null || blocks.size() == 0)
+				throw new AllocationDeclarationException.NoBlocksDeclaredException(
+						this);
+			
 			for (InetNetworkAllocationBlock<? extends InetAddress> block : blocks)
 			{
 				if (!ipVersion.equals(block.getAddress().getClass()))
@@ -158,9 +162,12 @@ public class AllocationRecord
 				}
 			}
 
-			for (AllocationRecord alloc : allocations)
+			if (depthLimit == -1 || depthLimit > 0)
 			{
-				alloc.validate(ipVersion);
+				for (AllocationRecord alloc : allocations)
+				{
+					alloc.validate(ipVersion, depthLimit -1);
+				}
 			}
 		}
 	}
