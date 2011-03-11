@@ -139,7 +139,7 @@ public class AllocationCurveMain
 	}
 
 	public static AllocationRecord loadConfig(final InputStream input,
-			final File workingDir, final int depthLimit)
+			final File workingDir, int depthLimit)
 	{
 		Yaml yamlParser = new Yaml(new SubYAMLConstructor<AllocationRecord>(
 				AllocationRecord.class, workingDir, depthLimit));
@@ -151,6 +151,6 @@ public class AllocationCurveMain
 			final AllocationRecord root, final int depthLimit)
 	{
 		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root,
-				-1);
+				depthLimit);
 	}
 }
