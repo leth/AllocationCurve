@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
@@ -62,34 +61,8 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		}
 	}
 
-	public void render(final OutputStream output, final AllocationRecord root,
-			final int depthLimit)
+	protected Collection<AllocationRecord> findLeaves(AllocationRecord root, int depthLimit)
 	{
-		Set<InetNetworkAllocationBlock<InetAddress>> blocks = root.getBlocks();
-		int startBit, finishBit;
-
-		if (blocks == null || blocks.size() == 0)
-		{
-			// Should not happen if the allocs have already been verified.
-			throw new AssertionError(
-					"Alocation should have failed verification.");
-		}
-		else if (blocks.size() == 1)
-		{
-			@SuppressWarnings("unchecked")
-			InetNetworkAllocationBlock<InetAddress> rootBlock = blocks
-					.toArray(new InetNetworkAllocationBlock[1])[0];
-			startBit = rootBlock.getSize();
-		}
-		else
-		{
-			// TODO implement code for multiple root blocks.
-			throw new UnsupportedOperationException();
-		}
-		finishBit = startBit;
-
-		PrintWriter out = new PrintWriter(output);
-
 		int currentDepth;
 		LinkedList<AllocationRecord> stack = new LinkedList<AllocationRecord>();
 		ArrayList<AllocationRecord> leaves = new ArrayList<AllocationRecord>();
@@ -115,43 +88,40 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 					}
 			}
 
-			for (InetNetworkAllocationBlock<InetAddress> b : current
-					.getBlocks())
-			{
-				finishBit = Math.max(finishBit, b.getSize());
-			}
-
 			if (children == null || children.size() == 0
 					|| currentDepth == depthLimit)
 				leaves.add(current);
 		}
-
-		// FIXME this will only work for ipv6.
-		if (finishBit == 128)
-		{
-			startBit--;
-			finishBit--;
-		}
-
-		out.println("<?xml version=\"1.0\"?>");
-		out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
-		out.printf(
-				"<svg xmlns='http://www.w3.org/2000/svg' foowidth='%d' fooheight='%d' version='1.1'>\n",
-				size.width, size.height);
+		
+		return leaves;
+	}
+	
+	public void render(final OutputStream output, final AllocationRecord root,
+			final int depthLimit)
+	{
+		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
+		
+		int[] range = getBitRange(root, leaves);
+		int startBit  = range[0];
+		int finishBit = range[1];
 
 		prepareAllocationColors(leaves);
 
-		// Draw the curve
-		Point2D.Double[] curve = caluclateCurve(size,
-				(int) Math.ceil((finishBit - startBit) / 2d));
-		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
-		for (Point2D.Double element : curve)
-		{
-			out.printf("%f %fL", element.x, element.y);
-		}
-		out.println("' />");
+		PrintWriter out = new PrintWriter(output);
 
-		// Draw the blocks
+		renderDocumentPreamble(out);
+		renderSVGOpen(out);
+		renderHilbertCurve(out, (int) Math.ceil((finishBit - startBit) / 2d));
+		renderAllocations(out, leaves, startBit, finishBit);
+		
+		renderSVGClose(out);
+
+		out.close();
+	}
+
+	protected void renderAllocations(PrintWriter out,
+			Collection<AllocationRecord> leaves, int startBit, int finishBit)
+	{
 		final int spacing = 5;
 		int xOffset = spacing;
 		int yOffset = size.height + spacing;
@@ -183,9 +153,33 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 
 			yOffset += blockSize + spacing;
 		}
-		out.println("</svg>");
+	}
 
-		out.close();
+	protected void renderHilbertCurve(PrintWriter out, int iterations)
+	{
+		Point2D.Double[] curve = caluclateCurve(size, iterations);
+		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
+		for (Point2D.Double element : curve)
+		{
+			out.printf("%f %fL", element.x, element.y);
+		}
+		out.println("' />");
+	}
+
+	protected void renderSVGOpen(PrintWriter output)
+	{
+		output.println("<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>");
+	}
+	
+	protected void renderSVGClose(PrintWriter out)
+	{
+		out.println("</svg>");		
+	}
+	
+	protected void renderDocumentPreamble(PrintWriter out)
+	{
+		out.println("<?xml version=\"1.0\"?>");
+		out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");
 	}
 
 }

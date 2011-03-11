@@ -22,7 +22,9 @@ import java.awt.geom.Rectangle2D;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
@@ -163,6 +165,48 @@ public abstract class HilbertAllocationRenderer
 		byte mask2 = (byte) (1 << sub_bit2);
 
 		return ((bits1 & mask1) != 0 ? 2 : 0) + ((bits2 & mask2) != 0 ? 1 : 0);
+	}
+	
+	public static int[] getBitRange(final AllocationRecord root, Collection<AllocationRecord> leaves)
+	{
+		int startBit, finishBit;
+		Set<InetNetworkAllocationBlock<InetAddress>> blocks = root.getBlocks();
+
+		if (blocks == null || blocks.size() == 0)
+		{
+			// Should not happen if the allocs have already been verified.
+			throw new AssertionError(
+					"Alocation should have failed verification.");
+		}
+		else if (blocks.size() == 1)
+		{
+			@SuppressWarnings("unchecked")
+			InetNetworkAllocationBlock<InetAddress> rootBlock = blocks
+					.toArray(new InetNetworkAllocationBlock[1])[0];
+			startBit = rootBlock.getSize();
+		}
+		else
+		{
+			// TODO implement code for multiple root blocks.
+			throw new UnsupportedOperationException();
+		}
+		finishBit = startBit;
+		
+		for (AllocationRecord leaf : leaves)
+		{
+			for (InetNetworkAllocationBlock<InetAddress> b : leaf.getBlocks())
+				finishBit = Math.max(finishBit, b.getSize());
+		}
+		
+		// FIXME this will only work for ipv6.
+		if (finishBit == 128)
+		{
+			startBit--;
+			finishBit--;
+		}
+	
+		int[] out = {startBit, finishBit};
+		return out;
 	}
 
 	public void render(final OutputStream output, final AllocationRecord root)
