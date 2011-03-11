@@ -63,15 +63,15 @@ public class AllocationCurveGUI extends JFrame
 
 	private JSpinner depthLimitSpinner;
 
-	public AllocationCurveGUI(AllocationCurveOptions opts)
+	public AllocationCurveGUI(final AllocationCurveOptions opts)
 	{
 		super("AllocationCurve");
-		
+
 		setupGUI();
-		
+
 		inputFile = opts.input;
 		outputFile = opts.output;
-		
+
 		if (inputFile != null)
 		{
 			inputFileLabel.setText(inputFile.getName());
@@ -80,10 +80,10 @@ public class AllocationCurveGUI extends JFrame
 		{
 			outputFileLabel.setText(outputFile.getName());
 		}
-		
+
 		depthLimitSpinner.setValue(opts.depthLimit);
 	}
-	
+
 	protected void setupGUI()
 	{
 		fc = new JFileChooser();
@@ -111,7 +111,7 @@ public class AllocationCurveGUI extends JFrame
 
 		JPanel spinnerPanel = new JPanel();
 		depthLimitSpinner = new JSpinner();
-		
+
 		depthLimitSpinner
 				.setEditor(new JSpinner.NumberEditor(depthLimitSpinner));
 		spinnerPanel.add(new JLabel("Depth limit:"));
@@ -212,7 +212,8 @@ public class AllocationCurveGUI extends JFrame
 			try
 			{
 				root = AllocationCurveMain.loadConfig(input,
-						inputFile.getParentFile(), (Integer) depthLimitSpinner.getValue());
+						inputFile.getParentFile(),
+						(Integer) depthLimitSpinner.getValue());
 			} catch (ConstructorException e)
 			{
 				Throwable foo = e;
@@ -228,14 +229,13 @@ public class AllocationCurveGUI extends JFrame
 								JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			
+
 			try
 			{
 				root.validate((Integer) depthLimitSpinner.getValue());
 			} catch (AllocationDeclarationException e)
 			{
-				JOptionPane
-				.showMessageDialog(
+				JOptionPane.showMessageDialog(
 						this,
 						"Allocation declaration failed validation:\n"
 								+ e.getMessage(), "AllocationCurve",

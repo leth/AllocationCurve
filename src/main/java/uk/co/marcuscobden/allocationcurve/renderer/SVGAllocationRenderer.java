@@ -61,7 +61,8 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		}
 	}
 
-	protected Collection<AllocationRecord> findLeaves(AllocationRecord root, int depthLimit)
+	protected Collection<AllocationRecord> findLeaves(
+			final AllocationRecord root, final int depthLimit)
 	{
 		int currentDepth;
 		LinkedList<AllocationRecord> stack = new LinkedList<AllocationRecord>();
@@ -92,17 +93,17 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 					|| currentDepth == depthLimit)
 				leaves.add(current);
 		}
-		
+
 		return leaves;
 	}
-	
+
 	public void render(final OutputStream output, final AllocationRecord root,
 			final int depthLimit)
 	{
 		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
-		
+
 		int[] range = getBitRange(root, leaves);
-		int startBit  = range[0];
+		int startBit = range[0];
 		int finishBit = range[1];
 
 		prepareAllocationColors(leaves);
@@ -113,14 +114,15 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		renderSVGOpen(out);
 		renderHilbertCurve(out, (int) Math.ceil((finishBit - startBit) / 2d));
 		renderAllocations(out, leaves, startBit, finishBit);
-		
+
 		renderSVGClose(out);
 
 		out.close();
 	}
 
-	protected void renderAllocations(PrintWriter out,
-			Collection<AllocationRecord> leaves, int startBit, int finishBit)
+	protected void renderAllocations(final PrintWriter out,
+			final Collection<AllocationRecord> leaves, final int startBit,
+			final int finishBit)
 	{
 		final int spacing = 5;
 		int xOffset = spacing;
@@ -155,7 +157,8 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		}
 	}
 
-	protected void renderHilbertCurve(PrintWriter out, int iterations)
+	protected void renderHilbertCurve(final PrintWriter out,
+			final int iterations)
 	{
 		Point2D.Double[] curve = caluclateCurve(size, iterations);
 		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
@@ -166,17 +169,17 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		out.println("' />");
 	}
 
-	protected void renderSVGOpen(PrintWriter output)
+	protected void renderSVGOpen(final PrintWriter output)
 	{
 		output.println("<svg xmlns='http://www.w3.org/2000/svg' version='1.1'>");
 	}
-	
-	protected void renderSVGClose(PrintWriter out)
+
+	protected void renderSVGClose(final PrintWriter out)
 	{
-		out.println("</svg>");		
+		out.println("</svg>");
 	}
-	
-	protected void renderDocumentPreamble(PrintWriter out)
+
+	protected void renderDocumentPreamble(final PrintWriter out)
 	{
 		out.println("<?xml version=\"1.0\"?>");
 		out.println("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">");

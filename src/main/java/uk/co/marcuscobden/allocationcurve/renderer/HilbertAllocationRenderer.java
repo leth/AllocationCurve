@@ -168,8 +168,9 @@ public abstract class HilbertAllocationRenderer
 
 		return ((bits1 & mask1) != 0 ? 2 : 0) + ((bits2 & mask2) != 0 ? 1 : 0);
 	}
-	
-	public static int[] getBitRange(final AllocationRecord root, Collection<AllocationRecord> leaves)
+
+	public static int[] getBitRange(final AllocationRecord root,
+			final Collection<AllocationRecord> leaves)
 	{
 		int startBit, finishBit;
 		Class<? extends InetAddress> ipVersion = null;
@@ -192,24 +193,25 @@ public abstract class HilbertAllocationRenderer
 		else
 		{
 			// TODO implement code for multiple root blocks.
-			throw new UnsupportedOperationException("Support for multiple root blocks is not implemented");
+			throw new UnsupportedOperationException(
+					"Support for multiple root blocks is not implemented");
 		}
 		finishBit = startBit;
-		
+
 		for (AllocationRecord leaf : leaves)
 		{
 			for (InetNetworkAllocationBlock<InetAddress> b : leaf.getBlocks())
 				finishBit = Math.max(finishBit, b.getSize());
 		}
-		
-		if ((ipVersion == Inet6Address.class && finishBit == 128) ||
-				(ipVersion == Inet4Address.class && finishBit == 32))
+
+		if ((ipVersion == Inet6Address.class && finishBit == 128)
+				|| (ipVersion == Inet4Address.class && finishBit == 32))
 		{
 			startBit--;
 			finishBit--;
 		}
-	
-		int[] out = {startBit, finishBit};
+
+		int[] out = { startBit, finishBit };
 		return out;
 	}
 

@@ -41,14 +41,14 @@ public class AllocationCurveMain
 	public static void main(final String[] args)
 	{
 		AllocationCurveOptions opts = new AllocationCurveOptions();
-		
+
 		if (args.length == 0)
 		{
 			startGUI(opts);
 		}
 		else
 		{
-			
+
 			CmdLineParser parser = new CmdLineParser(opts);
 			try
 			{
@@ -102,18 +102,20 @@ public class AllocationCurveMain
 					}
 				}
 
-				AllocationRecord root = loadConfig(input, workingDir, opts.depthLimit);
-				
+				AllocationRecord root = loadConfig(input, workingDir,
+						opts.depthLimit);
+
 				try
 				{
 					root.validate(opts.depthLimit);
 				} catch (AllocationDeclarationException e)
 				{
-					System.err.println("Cannot render, declaration failed validation.");
+					System.err
+							.println("Cannot render, declaration failed validation.");
 					System.err.println(e.getMessage());
 					System.exit(1);
 				}
-				
+
 				render(output, root, opts.depthLimit);
 
 				try
@@ -128,7 +130,7 @@ public class AllocationCurveMain
 		}
 	}
 
-	protected static void startGUI(AllocationCurveOptions opts)
+	protected static void startGUI(final AllocationCurveOptions opts)
 	{
 		AllocationCurveGUI gui = new AllocationCurveGUI(opts);
 
@@ -137,7 +139,7 @@ public class AllocationCurveMain
 	}
 
 	public static AllocationRecord loadConfig(final InputStream input,
-			final File workingDir, int depthLimit)
+			final File workingDir, final int depthLimit)
 	{
 		Yaml yamlParser = new Yaml(new SubYAMLConstructor<AllocationRecord>(
 				AllocationRecord.class, workingDir, depthLimit));

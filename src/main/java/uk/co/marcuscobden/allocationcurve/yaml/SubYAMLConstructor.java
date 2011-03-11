@@ -37,7 +37,8 @@ public class SubYAMLConstructor<T extends AllocationRecord> extends
 	protected Class<T> rootClass;
 	private int depthLimit;
 
-	public SubYAMLConstructor(final Class<T> c, final File workingDir, int depthLimit)
+	public SubYAMLConstructor(final Class<T> c, final File workingDir,
+			final int depthLimit)
 	{
 		super(c);
 		this.rootClass = c;
@@ -93,7 +94,7 @@ public class SubYAMLConstructor<T extends AllocationRecord> extends
 			else
 			{
 				Yaml yamlParser = new Yaml(new SubYAMLConstructor<T>(rootClass,
-						subFile, depthLimit -1));
+						subFile, depthLimit - 1));
 				@SuppressWarnings("unchecked")
 				T out = (T) yamlParser.load(input);
 				out.setIncludeFile(filename);
