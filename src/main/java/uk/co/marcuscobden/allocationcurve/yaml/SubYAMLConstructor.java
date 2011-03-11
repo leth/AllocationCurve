@@ -33,14 +33,14 @@ public class SubYAMLConstructor<T extends AllocationRecord> extends
 		FactoryConstructor
 {
 
-	protected File scope;
+	protected File workingDir;
 	protected Class<T> rootClass;
 
-	public SubYAMLConstructor(final Class<T> c, final File scope)
+	public SubYAMLConstructor(final Class<T> c, final File workingDir)
 	{
 		super(c);
 		this.rootClass = c;
-		this.scope = scope;
+		this.workingDir = workingDir;
 	}
 
 	@Override
@@ -68,8 +68,7 @@ public class SubYAMLConstructor<T extends AllocationRecord> extends
 					continue;
 
 				filename = ((ScalarNode) value).getValue();
-				subFile = new File(scope.getParent() + File.separator
-						+ filename);
+				subFile = new File(workingDir, filename);
 			}
 
 			FileInputStream input = null;

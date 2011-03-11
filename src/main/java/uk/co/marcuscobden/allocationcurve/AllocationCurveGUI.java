@@ -145,8 +145,7 @@ public class AllocationCurveGUI extends JFrame
 				String outname = inputFile.getName();
 				outname = outname.substring(0, outname.lastIndexOf('.'))
 						+ ".svg";
-				outname = inputFile.getParent() + File.separator + outname;
-				fc.setSelectedFile(new File(outname));
+				fc.setSelectedFile(new File(inputFile.getParentFile(), outname));
 			}
 
 			fc.setFileFilter(new FileNameExtensionFilter("SVG file (svg)",
@@ -169,7 +168,7 @@ public class AllocationCurveGUI extends JFrame
 			
 			try
 			{
-				AllocationCurve.generateOutput(inputFile, outputFile);
+				AllocationCurveMain.generateOutput(inputFile, outputFile);
 				JOptionPane.showMessageDialog(this, "Rendering complete.", "AllocationCurve", JOptionPane.PLAIN_MESSAGE);
 			}
 			catch (FileNotFoundException e1)
