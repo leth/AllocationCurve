@@ -23,9 +23,13 @@ import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 
 public abstract class AllocationDeclarationException extends Exception
 {
+	private static final long serialVersionUID = 3405766812640198630L;
+
 	public static class InetNetworkBlockDeclarationException extends
 			RuntimeException
 	{
+
+		private static final long serialVersionUID = -142674635253047830L;
 
 		public InetNetworkBlockDeclarationException(final String message)
 		{
@@ -37,6 +41,7 @@ public abstract class AllocationDeclarationException extends Exception
 	public static class NonEncompassedBlockException extends
 			AllocationDeclarationException
 	{
+		private static final long serialVersionUID = -1344468265881480587L;
 		private InetNetworkAllocationBlock<InetAddress> block;
 
 		public NonEncompassedBlockException(
@@ -53,18 +58,22 @@ public abstract class AllocationDeclarationException extends Exception
 	public static class IPVersionMismatch extends
 			AllocationDeclarationException
 	{
+		private static final long serialVersionUID = 2691642399596387271L;
+
 		public IPVersionMismatch(final AllocationRecord allocationRecord,
 				final Class<? extends InetAddress> expected,
 				final InetAddress mismatch)
 		{
 			super(allocationRecord, "IP version mismatch - expected "
-					+ expected.getName() + " found " + mismatch);
+					+ expected.getName() + " found " + mismatch + ".");
 		}
 	}
 
 	public static class NoBlocksDeclaredException extends
 			AllocationDeclarationException
 	{
+		private static final long serialVersionUID = -3739924672537767604L;
+
 		public NoBlocksDeclaredException(final AllocationRecord allocationRecord)
 		{
 			super(allocationRecord, "No blocks declared.");
