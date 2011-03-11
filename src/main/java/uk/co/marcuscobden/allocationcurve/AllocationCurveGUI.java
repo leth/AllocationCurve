@@ -21,7 +21,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -31,6 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.yaml.snakeyaml.constructor.ConstructorException;
@@ -56,6 +59,8 @@ public class AllocationCurveGUI extends JFrame
 
 	private JButton okButton;
 	private JButton cancelButton;
+
+	private JSpinner depthLimitSpinner;
 
 	public AllocationCurveGUI()
 	{
@@ -85,11 +90,11 @@ public class AllocationCurveGUI extends JFrame
 				.setLayout(new BoxLayout(recursionPanel, BoxLayout.Y_AXIS));
 
 		JPanel spinnerPanel = new JPanel();
-		JSpinner recursion = new JSpinner();
-		recursion.setValue(1);
-		recursion.setEditor(new JSpinner.NumberEditor(recursion));
+		depthLimitSpinner = new JSpinner();
+		depthLimitSpinner.setValue(1);
+		depthLimitSpinner.setEditor(new JSpinner.NumberEditor(depthLimitSpinner));
 		spinnerPanel.add(new JLabel("Depth limit:"));
-		spinnerPanel.add(recursion);
+		spinnerPanel.add(depthLimitSpinner);
 
 		JLabel label = new JLabel("Set to -1 for infinite depth");
 		label.setFont(label.getFont().deriveFont(Font.ITALIC));
@@ -118,9 +123,9 @@ public class AllocationCurveGUI extends JFrame
 		pack();
 	}
 
-	public void actionPerformed(final ActionEvent e)
+	public void actionPerformed(final ActionEvent event)
 	{
-		Object source = e.getSource();
+		Object source = event.getSource();
 		if (source == openButton)
 		{
 			if (inputFile != null)
@@ -166,24 +171,55 @@ public class AllocationCurveGUI extends JFrame
 				return;
 			}
 			
+			FileInputStream input;
 			try
 			{
-				AllocationCurveMain.generateOutput(inputFile, outputFile);
-				JOptionPane.showMessageDialog(this, "Rendering complete.", "AllocationCurve", JOptionPane.PLAIN_MESSAGE);
+				input = new FileInputStream(inputFile);
 			}
-			catch (FileNotFoundException e1)
+			catch (FileNotFoundException e)
 			{
-				JOptionPane.showMessageDialog(this, "File not found\n" + e1.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(this, "File not found\n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
-			catch (ConstructorException e1)
+			
+			AllocationRecord root;
+			try
 			{
-				Throwable foo = e1;
+				root = AllocationCurveMain.loadConfig(input, inputFile.getParentFile());
+			}
+			catch (ConstructorException e)
+			{
+				Throwable foo = e;
 				while (foo instanceof YAMLException)
 				{
 					foo = foo.getCause();
 				}
 				JOptionPane.showMessageDialog(this, "Error in allocation declaration:\n" +foo.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+			
+			FileOutputStream output;
+			try
+			{
+				output = new FileOutputStream(outputFile);
+			}
+			catch (FileNotFoundException e)
+			{
+				JOptionPane.showMessageDialog(this, "Cannot write to file. \n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+			
+			try
+			{
+				AllocationCurveMain.render(output, root, (Integer) this.depthLimitSpinner.getValue());
+			}
+			catch (Exception e)
+			{
+				JOptionPane.showMessageDialog(this, "Error rendering allocation. \n" + e.getMessage(), "AllocationCurve", JOptionPane.ERROR_MESSAGE);
+				e.printStackTrace();
+				return;
+			}
+			JOptionPane.showMessageDialog(this, "Rendering complete.", "AllocationCurve", JOptionPane.PLAIN_MESSAGE);
 		}
 		else if (source == cancelButton)
 		{
