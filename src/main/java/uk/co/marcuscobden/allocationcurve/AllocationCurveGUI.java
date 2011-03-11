@@ -210,7 +210,7 @@ public class AllocationCurveGUI extends JFrame
 			try
 			{
 				root = AllocationCurveMain.loadConfig(input,
-						inputFile.getParentFile());
+						inputFile.getParentFile(), (Integer) depthLimitSpinner.getValue());
 			} catch (ConstructorException e)
 			{
 				Throwable foo = e;

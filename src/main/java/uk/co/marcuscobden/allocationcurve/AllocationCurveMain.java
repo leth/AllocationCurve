@@ -102,7 +102,7 @@ public class AllocationCurveMain
 					}
 				}
 
-				AllocationRecord root = loadConfig(input, workingDir);
+				AllocationRecord root = loadConfig(input, workingDir, opts.depthLimit);
 				render(output, root, opts.depthLimit);
 
 				try
@@ -126,11 +126,10 @@ public class AllocationCurveMain
 	}
 
 	public static AllocationRecord loadConfig(final InputStream input,
-			final File workingDir)
+			final File workingDir, int depthLimit)
 	{
-		// TODO pass depth limit to config loading
 		Yaml yamlParser = new Yaml(new SubYAMLConstructor<AllocationRecord>(
-				AllocationRecord.class, workingDir));
+				AllocationRecord.class, workingDir, depthLimit));
 
 		return (AllocationRecord) yamlParser.load(input);
 	}
