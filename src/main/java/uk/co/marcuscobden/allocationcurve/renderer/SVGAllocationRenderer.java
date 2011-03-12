@@ -156,15 +156,18 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 			yOffset += blockSize + spacing;
 		}
 	}
-
+	
 	protected void renderHilbertCurve(final PrintWriter out,
 			final int iterations)
 	{
 		Point2D.Double[] curve = caluclateCurve(size, iterations);
 		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
-		for (Point2D.Double element : curve)
+		for (int i = 0; i < curve.length; i++)
 		{
-			out.printf("%f %fL", element.x, element.y);
+			out.printf("%f %f", curve[i].x, curve[i].y);
+			// Firefox cares whether we have a trailing L on the path.
+			if (i < curve.length -1)
+				out.print("L");
 		}
 		out.println("' />");
 	}
