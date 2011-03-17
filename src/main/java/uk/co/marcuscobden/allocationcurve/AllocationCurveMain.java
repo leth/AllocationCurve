@@ -32,6 +32,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.yaml.snakeyaml.Yaml;
 
 import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
+import uk.co.marcuscobden.allocationcurve.renderer.html.HTMLAllocationRenderer;
 import uk.co.marcuscobden.allocationcurve.renderer.SVGAllocationRenderer;
 import uk.co.marcuscobden.allocationcurve.yaml.SubYAMLConstructor;
 
@@ -150,7 +151,8 @@ public class AllocationCurveMain
 	public static void render(final OutputStream output,
 			final AllocationRecord root, final int depthLimit)
 	{
-		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root,
-				depthLimit);
+//		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root,
+//				depthLimit);
+		new HTMLAllocationRenderer().render(output, root, depthLimit);
 	}
 }
