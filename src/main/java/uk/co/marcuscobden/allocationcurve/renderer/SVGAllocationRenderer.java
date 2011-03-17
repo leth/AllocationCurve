@@ -145,18 +145,24 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 
 			for (InetNetworkAllocationBlock<InetAddress> block : r.getBlocks())
 			{
-				Rectangle2D.Double bounds = getBlockBounds(block, startBit,
-						finishBit);
-				out.printf(
-						"<rect x='%f' y='%f' width='%f' height='%f' fill='rgb(%d, %d, %d)' fill-opacity='0.75'/>\n",
-						bounds.x, bounds.y, bounds.width, bounds.height,
-						color.getRed(), color.getGreen(), color.getBlue());
+
+				renderBlockRectangle(out, block, color, startBit, finishBit);
 			}
 
 			yOffset += blockSize + spacing;
 		}
 	}
 	
+	protected void renderBlockRectangle(PrintWriter out, InetNetworkAllocationBlock<InetAddress> block, Color color, int startBit, int finishBit)
+	{
+		Rectangle2D.Double bounds = getBlockBounds(block, startBit,
+				finishBit);
+		out.printf(
+				"<rect x='%f' y='%f' width='%f' height='%f' fill='rgb(%d, %d, %d)' fill-opacity='0.75'/>\n",
+				bounds.x, bounds.y, bounds.width, bounds.height,
+				color.getRed(), color.getGreen(), color.getBlue());
+	}
+
 	protected void renderHilbertCurve(final PrintWriter out,
 			final int iterations)
 	{

@@ -214,9 +214,4 @@ public abstract class HilbertAllocationRenderer
 		int[] out = { startBit, finishBit };
 		return out;
 	}
-
-	public void render(final OutputStream output, final AllocationRecord root)
-	{
-		render(output, root, -1);
-	}
 }

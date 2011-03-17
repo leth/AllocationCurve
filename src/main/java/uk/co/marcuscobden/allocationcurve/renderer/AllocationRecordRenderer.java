@@ -23,8 +23,6 @@ import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 public interface AllocationRecordRenderer
 {
 
-	public void render(OutputStream output, AllocationRecord root);
-
 	public void render(OutputStream output, AllocationRecord root,
 			int depthLimit);
 }

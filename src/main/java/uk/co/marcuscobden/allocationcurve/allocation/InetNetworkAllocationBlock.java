@@ -286,4 +286,10 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		return true;
 	}
 
+	@Override
+	public String toString()
+	{
+		return this.address + "/" + this.size;
+	}
+
 }
