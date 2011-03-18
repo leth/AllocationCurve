@@ -113,7 +113,7 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 			final int iterations)
 	{
 		Point2D.Double[] curve = caluclateCurve(size, iterations);
-		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
+		out.print("<path fill='none' stroke='black' stroke-width='1' d='");
 		Point2D.Double prev, current, next;
 		
 		DecimalFormat format = new DecimalFormat("#.000");
@@ -122,24 +122,55 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 		for (int i = 0; i < curve.length; i++)
 		{
 			current = curve[i];
-			if (i > 0 && i +1 < curve.length)
+			char mode;
+			if (i == 0)
+			{
+				mode = 'M';
+			}
+			else
 			{
 				prev = curve[i -1];
-				next = curve[i +1];
-				
+
 				// Don't plot intermediate points in straight lines
-				if (prev.x == current.x &&
-					current.x == next.x)
-					continue;
-				else if (prev.y == current.y &&
-						current.y == next.y)
-					continue;
+				if(i +1 < curve.length)
+				{
+					next = curve[i +1];
+				
+					if (prev.x == current.x &&
+						current.x == next.x)
+						continue;
+					else if (prev.y == current.y &&
+							current.y == next.y)
+						continue;
+					// NB does not check for straight lines which are not orthogonal to the x or y axes
+				}
+				
+				// space optimisation for horizontal & vertical lines
+				if (prev.x == current.x)
+					mode = 'V';
+				else if (prev.y == current.y)
+					mode = 'H';
+				else
+					mode = 'L';
 			}
-			out.print(format.format(current.x) + " " + format.format(current.y));
 			
-			// Firefox cares whether we have a trailing L on the path.
-			if (i < curve.length -1)
-				out.print("L");
+			out.print(mode);
+			switch (mode) {
+				case 'L':
+				case 'M':
+					out.print(format.format(current.x) + " " + format.format(current.y));
+					break;
+
+				case 'H':
+					out.print(format.format(current.x));
+					break;
+				case 'V':
+					out.print(format.format(current.y));
+					break;
+
+				default:
+					break;
+			}
 		}
 		out.println("' />");
 	}
