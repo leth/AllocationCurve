@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title/>
+<style>
+body {
+	margin: 0;
+	padding: 5px;
+}
+#allocation_graphic svg {
+	width: 500px;
+	height: 500px;
+	float: left;
+}
+#allocation_tree {
+	margin-left: 510px;
+	border: 1px solid #555;
+}
+
+.allocation_record {
+	border-left: 1px solid #555;
+	padding-top: 5px;
+}
+
+#allocation_tree > .allocation_record {
+	border-left: none;
+}
+
+.allocation_record h3{
+	margin: 0 0 0 5px;
+}
+
+.allocation_record ul.allocation_blocks {
+	margin: 5px 0 0 5px;
+	padding: 0 0 0 1.2em;
+}
+
+.allocation_record ul.sub_allocations {
+	margin: 5px 0 0 0;
+	list-style-type: none;
+	border: 1px solid #555;
+	border-left: none;
+	border-right: none;
+}
+</style>
+</head>
+<body>
+<div id='allocation_graphic'>ALLOCATION_GRAPHIC</div>
+<div id='allocation_tree'>ALLOCATION_TREE</div>
+</body>
+</html>
