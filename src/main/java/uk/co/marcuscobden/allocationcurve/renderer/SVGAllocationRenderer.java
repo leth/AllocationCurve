@@ -22,11 +22,10 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.math.RoundingMode;
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
@@ -35,121 +34,68 @@ import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 public class SVGAllocationRenderer extends HilbertAllocationRenderer
 {
 
-	protected Map<AllocationRecord, Color> colorMap = new HashMap<AllocationRecord, Color>();
-
 	public SVGAllocationRenderer(final Dimension size)
 	{
 		super(size);
 	}
 
-	protected Color getAllocationColor(final AllocationRecord alloc)
-	{
-		return colorMap.get(alloc);
-	}
-
-	protected void prepareAllocationColors(
-			final Collection<AllocationRecord> allocations)
-	{
-		float hueStep = 1f / (allocations.size() + 1);
-		float hue = 0;
-
-		for (AllocationRecord a : allocations)
-		{
-			colorMap.put(a, Color.getHSBColor(hue, 1f, 1f));
-
-			hue += hueStep;
-		}
-	}
-
-	protected Collection<AllocationRecord> findLeaves(
-			final AllocationRecord root, final int depthLimit)
-	{
-		int currentDepth;
-		LinkedList<AllocationRecord> stack = new LinkedList<AllocationRecord>();
-		ArrayList<AllocationRecord> leaves = new ArrayList<AllocationRecord>();
-		Map<AllocationRecord, Integer> depthMap = new HashMap<AllocationRecord, Integer>();
-
-		stack.add(root);
-		depthMap.put(root, 0);
-
-		AllocationRecord current;
-		while (!stack.isEmpty())
-		{
-			current = stack.pop();
-			currentDepth = depthMap.get(current);
-
-			Collection<AllocationRecord> children = current.getAllocations();
-			if (depthLimit == -1 || currentDepth < depthLimit)
-			{
-				if (children != null)
-					for (AllocationRecord c : children)
-					{
-						stack.addLast(c);
-						depthMap.put(c, currentDepth + 1);
-					}
-			}
-
-			if (children == null || children.size() == 0
-					|| currentDepth == depthLimit)
-				leaves.add(current);
-		}
-
-		return leaves;
-	}
-
 	public void render(final OutputStream output, final AllocationRecord root,
 			final int depthLimit)
 	{
-		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
+		PrintWriter out = new PrintWriter(output);
+		
+		renderDocumentPreamble(out);
+		renderSVGContent(out, root, depthLimit);
 
+		out.close();
+	}
+	
+	public void renderSVGContent(final PrintWriter output, final AllocationRecord root,
+			final int depthLimit)
+	{
+		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
+		
+		renderSVGContent(output, root,
+				depthLimit, leaves, prepareAllocationColors(leaves));
+	}
+	
+	public void renderSVGContent(final PrintWriter output, final AllocationRecord root,
+			final int depthLimit, Collection<AllocationRecord> leaves, Map<AllocationRecord, Color> colorMap)
+	{
 		int[] range = getBitRange(root, leaves);
 		int startBit = range[0];
 		int finishBit = range[1];
 
-		prepareAllocationColors(leaves);
+		renderSVGOpen(output);
+		renderHilbertCurve(output, (int) Math.ceil((finishBit - startBit) / 2d));
+		renderAllocations(output, leaves, colorMap, startBit, finishBit);
 
-		PrintWriter out = new PrintWriter(output);
-
-		renderDocumentPreamble(out);
-		renderSVGOpen(out);
-		renderHilbertCurve(out, (int) Math.ceil((finishBit - startBit) / 2d));
-		renderAllocations(out, leaves, startBit, finishBit);
-
-		renderSVGClose(out);
-
-		out.close();
+		renderSVGClose(output);
 	}
 
 	protected void renderAllocations(final PrintWriter out,
-			final Collection<AllocationRecord> leaves, final int startBit,
+			final Collection<AllocationRecord> leaves, Map<AllocationRecord, Color> colorMap, final int startBit,
 			final int finishBit)
 	{
-		final int spacing = 5;
-		int xOffset = spacing;
-		int yOffset = size.height + spacing;
-		int blockSize = 10;
-
 		for (AllocationRecord r : leaves)
 		{
 			out.println("<!-- " + r.getLabel() + " -->");
 
-			Color color = getAllocationColor(r);
+			Color color = colorMap.get(r);
 
-			out.printf(
-					"<rect x='%d' y='%d' width='%d' height='%d' fill='rgb(%d,%d,%d)' />\n",
-					xOffset, yOffset, blockSize, blockSize, color.getRed(),
-					color.getGreen(), color.getBlue());
-			out.printf(
-					"<text x='%d' y='%d' font-family='Verdana' font-size='12'>%s</text>\n",
-					xOffset + blockSize + spacing, yOffset + 10, r.getLabel());
+//			out.printf(
+//					"<rect x='%d' y='%d' width='%d' height='%d' fill='rgb(%d,%d,%d)' />\n",
+//					xOffset, yOffset, blockSize, blockSize, color.getRed(),
+//					color.getGreen(), color.getBlue());
+//			out.printf(
+//					"<text x='%d' y='%d' font-family='Verdana' font-size='12'>%s</text>\n",
+//					xOffset + blockSize + spacing, yOffset + 10, r.getLabel());
 
 			for (InetNetworkAllocationBlock<InetAddress> block : r.getBlocks())
 			{
 
 				renderBlockRectangle(out, block, color, startBit, finishBit);
 			}
-
-			yOffset += blockSize + spacing;
 		}
 	}
 	
@@ -168,9 +114,29 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 	{
 		Point2D.Double[] curve = caluclateCurve(size, iterations);
 		out.print("<path fill='none' stroke='black' stroke-width='1' d='M");
+		Point2D.Double prev, current, next;
+		
+		DecimalFormat format = new DecimalFormat("#.000");
+		format.setRoundingMode(RoundingMode.HALF_UP);
+		
 		for (int i = 0; i < curve.length; i++)
 		{
-			out.printf("%f %f", curve[i].x, curve[i].y);
+			current = curve[i];
+			if (i > 0 && i +1 < curve.length)
+			{
+				prev = curve[i -1];
+				next = curve[i +1];
+				
+				// Don't plot intermediate points in straight lines
+				if (prev.x == current.x &&
+					current.x == next.x)
+					continue;
+				else if (prev.y == current.y &&
+						current.y == next.y)
+					continue;
+			}
+			out.print(format.format(current.x) + " " + format.format(current.y));
+			
 			// Firefox cares whether we have a trailing L on the path.
 			if (i < curve.length -1)
 				out.print("L");

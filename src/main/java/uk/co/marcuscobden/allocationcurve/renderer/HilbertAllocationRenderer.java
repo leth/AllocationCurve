@@ -25,17 +25,20 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 
 public abstract class HilbertAllocationRenderer
-		implements
+		extends
 			AllocationRecordRenderer
 {
-
+	
 	public static Point2D.Double[] caluclateCurve(final Dimension size,
 			final int iterations)
 	{
