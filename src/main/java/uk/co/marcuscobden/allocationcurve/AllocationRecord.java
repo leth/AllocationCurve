@@ -24,6 +24,17 @@ import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationExcepti
 
 public class AllocationRecord
 {
+	protected AllocationRecord parent;
+	public AllocationRecord getParent()
+	{
+		return this.parent;
+	}
+
+	protected void setParent(AllocationRecord parent)
+	{
+		this.parent = parent;
+	}
+
 	protected String label;
 	protected String description;
 	protected String includeFile;
@@ -58,6 +69,9 @@ public class AllocationRecord
 	public void setAllocations(final Set<AllocationRecord> allocations)
 	{
 		this.allocations = allocations;
+		
+		for (AllocationRecord r : allocations)
+			r.setParent(this);
 	}
 
 	public void setBlocks(
@@ -171,5 +185,10 @@ public class AllocationRecord
 				}
 			}
 		}
+	}
+	
+	public boolean hasSubAllocations()
+	{
+		return allocations != null && allocations.size() > 0; 
 	}
 }
