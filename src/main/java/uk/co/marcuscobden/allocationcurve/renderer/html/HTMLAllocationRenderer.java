@@ -75,7 +75,6 @@ public class HTMLAllocationRenderer
 			outputStream.write(output.getBytes());
 		} catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
