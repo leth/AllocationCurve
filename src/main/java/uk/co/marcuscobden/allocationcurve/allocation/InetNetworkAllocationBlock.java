@@ -107,9 +107,9 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 		// printAddress(out);
 		// System.out.flush();
 		throw new AllocationDeclarationException.InetNetworkBlockDeclarationException(
-				"Block " + address.toString().substring(1) + "/" + prefixLength
+				"Block " + address.getHostAddress() + "/" + prefixLength
 						+ " has bits set in suffix (would become "
-						+ out.toString().substring(1) + "/" + prefixLength
+						+ out.getHostAddress() + "/" + prefixLength
 						+ ").");
 	}
 
@@ -168,7 +168,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 	{
 		if (size < 0)
 			throw new IllegalArgumentException(
-					"Block size cannot be negative. (" + address + "/" + size
+					"Block size cannot be negative. (" + address.getHostAddress() + "/" + size
 							+ ")");
 
 		ensureSuffixIsClear(address, size);
@@ -289,7 +289,7 @@ public abstract class InetNetworkAllocationBlock<InetAddressType extends InetAdd
 	@Override
 	public String toString()
 	{
-		return this.address + "/" + this.size;
+		return this.address.getHostAddress() + "/" + this.size;
 	}
 
 }
