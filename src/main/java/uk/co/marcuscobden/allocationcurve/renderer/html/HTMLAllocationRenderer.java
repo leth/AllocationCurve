@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
 import uk.co.marcuscobden.allocationcurve.renderer.AllocationRecordRenderer;
-import uk.co.marcuscobden.allocationcurve.renderer.HilbertAllocationRenderer;
 import uk.co.marcuscobden.allocationcurve.renderer.SVGAllocationRenderer;
 
 public class HTMLAllocationRenderer
@@ -29,18 +28,46 @@ public class HTMLAllocationRenderer
 
 	public HTMLAllocationRenderer()
 	{
-		svgRenderer = new SVGAllocationRenderer(new Dimension(500, 500));
+		svgRenderer = new SVGAllocationRenderer(new Dimension(500, 500), true);
 	}
 	
+	public void populateInheritedColors(Map<AllocationRecord, Color> colorMap, AllocationRecordRenderCategorisation cat)
+	{
+		for (AllocationRecord internal : cat.internalNodes)
+		{
+			float count = 0;
+			float r,g,b;
+			r = g = b = 0;
+			
+			for (AllocationRecord sub : cat.inheritedLeaves.get(internal))
+			{
+				count ++;
+				Color c = colorMap.get(sub);
+				r += c.getRed();
+				g += c.getGreen();
+				b += c.getBlue();
+			}
+			
+			r /= count;
+			g /= count;
+			b /= count;
+			
+			Color out = new Color((int)r, (int)g, (int)b);
+			colorMap.put(internal, out);
+		}
+	}
+
 	public void render(final OutputStream outputStream, final AllocationRecord root,
 			final int depthLimit)
 	{
-		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
-		Map<AllocationRecord, Color> colorMap = prepareAllocationColors(leaves);
+		AllocationRecordRenderCategorisation cat = new AllocationRecordRenderer.AllocationRecordRenderCategorisation(root, depthLimit);
+		
+		Map<AllocationRecord, Color> colorMap = prepareAllocationColors(cat.leafNodes);
+		populateInheritedColors(colorMap, cat);
 		
 		String output = getTemplateContent();
 		
-		output = output.replace("ALLOCATION_GRAPHIC", renderSVGGraphic(root, depthLimit, leaves, colorMap));
+		output = output.replace("ALLOCATION_GRAPHIC", renderSVGGraphic(root, depthLimit, cat.allNodes, colorMap));
 		output = output.replace("ALLOCATION_TREE", renderAllocationTree(root, 0, depthLimit, colorMap));
 		
 		try
@@ -75,7 +102,7 @@ public class HTMLAllocationRenderer
 		if (colorMap.containsKey(root))
 		{
 			Color color = colorMap.get(root);
-			style = "style='border-left: 4px solid #"+ Integer.toHexString(color.getRGB()).substring(2) +"' ";
+			style = "style='border-left: 5px solid #"+ Integer.toHexString(color.getRGB()).substring(2) +"' ";
 		}
 		out.append("<div ")
 			.append(style)

@@ -30,13 +30,21 @@ import java.util.Map;
 
 import uk.co.marcuscobden.allocationcurve.AllocationRecord;
 import uk.co.marcuscobden.allocationcurve.allocation.InetNetworkAllocationBlock;
+import uk.co.marcuscobden.allocationcurve.renderer.AllocationRecordRenderer.AllocationRecordRenderCategorisation;
 
 public class SVGAllocationRenderer extends HilbertAllocationRenderer
 {
+	protected boolean renderNonLeafBlocks;
 
 	public SVGAllocationRenderer(final Dimension size)
 	{
+		this(size, false);
+	}
+	
+	public SVGAllocationRenderer(final Dimension size, boolean renderNonLeafBlocks)
+	{
 		super(size);
+		this.renderNonLeafBlocks = renderNonLeafBlocks;
 	}
 
 	public void render(final OutputStream output, final AllocationRecord root,
@@ -53,10 +61,13 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 	public void renderSVGContent(final PrintWriter output, final AllocationRecord root,
 			final int depthLimit)
 	{
-		Collection<AllocationRecord> leaves = findLeaves(root, depthLimit);
+		AllocationRecordRenderCategorisation cat = new AllocationRecordRenderer.AllocationRecordRenderCategorisation(root, depthLimit);
+		
+		Collection<AllocationRecord> records = 
+			renderNonLeafBlocks ? cat.allNodes : cat.leafNodes;
 		
 		renderSVGContent(output, root,
-				depthLimit, leaves, prepareAllocationColors(leaves));
+				depthLimit, records, prepareAllocationColors(records));
 	}
 	
 	public void renderSVGContent(final PrintWriter output, final AllocationRecord root,
@@ -74,10 +85,10 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 	}
 
 	protected void renderAllocations(final PrintWriter out,
-			final Collection<AllocationRecord> leaves, Map<AllocationRecord, Color> colorMap, final int startBit,
+			final Collection<AllocationRecord> allocations, Map<AllocationRecord, Color> colorMap, final int startBit,
 			final int finishBit)
 	{
-		for (AllocationRecord r : leaves)
+		for (AllocationRecord r : allocations)
 		{
 			out.println("<!-- " + r.getLabel() + " -->");
 
@@ -94,26 +105,35 @@ public class SVGAllocationRenderer extends HilbertAllocationRenderer
 			for (InetNetworkAllocationBlock<InetAddress> block : r.getBlocks())
 			{
 
-				renderBlockRectangle(out, block, color, startBit, finishBit);
+				renderBlockRectangle(out, block, color, startBit, finishBit, !r.hasSubAllocations());
 			}
 		}
 	}
 	
-	protected void renderBlockRectangle(PrintWriter out, InetNetworkAllocationBlock<InetAddress> block, Color color, int startBit, int finishBit)
+	protected void renderBlockRectangle(PrintWriter out, InetNetworkAllocationBlock<InetAddress> block, Color color, int startBit, int finishBit, boolean filled)
 	{
 		Rectangle2D.Double bounds = getBlockBounds(block, startBit,
 				finishBit);
+		
+		double opacity = filled ? 0.6 : 0.3;
+		
+		int r = color.getRed(), g = color.getGreen(), b = color.getBlue();
+		
 		out.printf(
-				"<rect x='%f' y='%f' width='%f' height='%f' fill='rgb(%d, %d, %d)' fill-opacity='0.75'/>\n",
+				"<rect x='%f' y='%f' width='%f' height='%f' fill='rgb(%d, %d, %d)' stroke='rgb(%d, %d, %d)' fill-opacity='%.3f'/>\n",
 				bounds.x, bounds.y, bounds.width, bounds.height,
-				color.getRed(), color.getGreen(), color.getBlue());
+				r, g, b,
+				r, g, b,
+				opacity);
 	}
 
 	protected void renderHilbertCurve(final PrintWriter out,
 			final int iterations)
 	{
 		Point2D.Double[] curve = caluclateCurve(size, iterations);
-		out.print("<path fill='none' stroke='black' stroke-width='1' d='");
+		out.print("<path fill='none' stroke='black' stroke-width='");
+		out.printf("%.3f", 2 / (double)iterations);
+		out.print("' d='");
 		Point2D.Double prev, current, next;
 		
 		DecimalFormat format = new DecimalFormat("#.000");

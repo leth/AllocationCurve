@@ -172,12 +172,12 @@ public class AllocationCurveGUI extends JFrame
 			{
 				String outname = inputFile.getName();
 				outname = outname.substring(0, outname.lastIndexOf('.'))
-						+ ".svg";
+						+ ".xhtml";
 				fc.setSelectedFile(new File(inputFile.getParentFile(), outname));
 			}
 
-			fc.setFileFilter(new FileNameExtensionFilter("SVG file (svg)",
-					"svg"));
+			fc.setFileFilter(new FileNameExtensionFilter("XHTML file (xhtml)",
+					"xhtml"));
 			int returnVal = fc.showSaveDialog(this);
 
 			if (returnVal == JFileChooser.APPROVE_OPTION)

@@ -16,7 +16,6 @@
  */
 package uk.co.marcuscobden.allocationcurve;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -24,6 +23,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.swing.WindowConstants;
 
@@ -32,7 +34,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.yaml.snakeyaml.Yaml;
 
 import uk.co.marcuscobden.allocationcurve.exception.AllocationDeclarationException;
-import uk.co.marcuscobden.allocationcurve.renderer.SVGAllocationRenderer;
+import uk.co.marcuscobden.allocationcurve.renderer.html.HTMLAllocationRenderer;
 import uk.co.marcuscobden.allocationcurve.yaml.SubYAMLConstructor;
 
 public class AllocationCurveMain
@@ -150,7 +152,7 @@ public class AllocationCurveMain
 	public static void render(final OutputStream output,
 			final AllocationRecord root, final int depthLimit)
 	{
-		new SVGAllocationRenderer(new Dimension(500, 500)).render(output, root,
+		new HTMLAllocationRenderer().render(output, root,
 				depthLimit);
 	}
 }
