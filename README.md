@@ -2,7 +2,7 @@
 
 This utility takes as input an IPv6 subnet and a list of smaller subnets within it.
 It then draws the larger subnet as a two dimensional hilbert space-filling curve, and plots the enclosed subnets within it.
-The utility outputs this in Scalable Vector Graphics (SVG) format.
+The utility outputs this as an XHTML with embedded Scalable Vector Graphics (SVG).
 
 # Current Status
 
@@ -11,6 +11,13 @@ This utility is currently undergoing testing before release.
 # Input and Output
 
 By default, if called with no arguments, the program will display a GUI allowing you to set input, output and control parameters. Alternatively, you may use command line flags, which will cause the GUI not to be displayed.
+
+The options are as follows:
+
+	-d (--depth) N     : Limit the depth of allocation records to show. -1 for no limit.
+	-g (--showGUI)     : Show the render settings GUI.
+	-i (--input) FILE  : Read input from this file
+	-o (--output) FILE : Output to this file
 
 The program input is defined using [YAML](http://www.yaml.org/) syntax, and supports nested allocation groups.
 
@@ -33,10 +40,7 @@ The program input is defined using [YAML](http://www.yaml.org/) syntax, and supp
 
 You can find examples in the src/test/resources/examples directory.
 
-# Planned features (aka. TODO List)
-* Ignore Comment lines
-* IPv4 support
-* Different output formats
+# Possible future features
 * Subnet tree boundary markers
 
 # License
